@@ -1,6 +1,8 @@
 package malictus.konverti;
+
 import java.io.File;
 import javax.swing.*;
+import malictus.konverti.ui.*;
 
 //contains the main class for starting up konverti
 public class KonvertiMain {
@@ -18,6 +20,8 @@ public class KonvertiMain {
 	private static final String IM_IDENTIFY_PATH = "ffmpeg/win_64/bin/ffprobe.exe";
 	public static File IM_CONVERT_FILE;
 	public static File IM_IDENTIFY_FILE;
+	//current version
+	public static float VERSION = 0.01f;
 
 	public static void main(String[] args) {
 		//set look and feel
@@ -55,7 +59,7 @@ public class KonvertiMain {
 			JOptionPane.showMessageDialog(null, "Fatal error. ImageMagick identify executable is missing", "IM identity missing", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
-		
+		new MainFrame();
 	}
 
 }
