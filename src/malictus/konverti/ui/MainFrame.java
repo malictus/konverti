@@ -16,8 +16,10 @@ public class MainFrame extends JFrame {
 	
 	private JPanel contentPane = null;
 	private JFileChooser fc_process = new JFileChooser();
-	private JTextField txtfProcess; 
-	private JButton btnConvert;
+	private JTextField txtf_Process; 
+	private JButton btn_Convert;
+	private JLabel lbl_Status;
+	private JProbePanel pnl_Jprobe;
 	
 	/**
 	 * Initialize the main window
@@ -35,40 +37,52 @@ public class MainFrame extends JFrame {
         /*********************************/
         /** set up components on screen **/
         /*********************************/
-        FlowLayout fl = new FlowLayout();
-        fl.setHgap(5);
-        fl.setVgap(5);
-        fl.setAlignment(FlowLayout.LEFT);
-        contentPane.setLayout(fl);
+        FlowLayout layout_ContentPane = new FlowLayout();
+        layout_ContentPane.setHgap(5);
+        layout_ContentPane.setVgap(5);
+        layout_ContentPane.setAlignment(FlowLayout.LEFT);
+        contentPane.setLayout(layout_ContentPane);
         /* FILE TO PROCESS LINE  */
-        JPanel pnlProcess = new JPanel();
-        FlowLayout f1 = new FlowLayout();
-        f1.setAlignment(FlowLayout.LEFT);
-        pnlProcess.setLayout(f1);
-        JLabel lblProcess = new JLabel("File To Process:");
-        txtfProcess = new JTextField("");
-        txtfProcess.setPreferredSize(new Dimension(425, 25));
-        JButton btnProcess = new JButton("Browse");
-        pnlProcess.add(lblProcess);
-        pnlProcess.add(txtfProcess);
-        pnlProcess.add(btnProcess);
-        btnProcess.addActionListener(new java.awt.event.ActionListener() {
+        JPanel pnl_Process = new JPanel();
+        FlowLayout layout_Process = new FlowLayout();
+        layout_Process.setAlignment(FlowLayout.LEFT);
+        pnl_Process.setLayout(layout_Process);
+        JLabel lbl_Process = new JLabel("File To Process:");
+        txtf_Process = new JTextField("");
+        txtf_Process.setPreferredSize(new Dimension(425, 25));
+        txtf_Process.setEditable(false);
+        JButton btn_Process = new JButton("Browse");
+        pnl_Process.add(lbl_Process);
+        pnl_Process.add(txtf_Process);
+        pnl_Process.add(btn_Process);
+        btn_Process.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				int response = fc_process.showOpenDialog(null);
 				if (response != JFileChooser.CANCEL_OPTION) {
 					File x = fc_process.getSelectedFile();
-					txtfProcess.setText(x.getPath());
+					txtf_Process.setText(x.getPath());
+					disablePanels();
 				}	
 			}
         });
-        btnConvert = new JButton("<html><b>Convert</b></html>");
-        btnConvert.addActionListener(new java.awt.event.ActionListener() {
+        btn_Convert = new JButton("<html><b>Convert</b></html>");
+        btn_Convert.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				processFile();
 			}
         });
-        pnlProcess.add(btnConvert);
-        contentPane.add(pnlProcess);
+        pnl_Process.add(btn_Convert);
+        contentPane.add(pnl_Process);
+        /** JProbe Panel **/
+        pnl_Jprobe = new JProbePanel(this);        
+        contentPane.add(pnl_Jprobe);
+        pnl_Jprobe.setEnabled(false);
+        /** Status Panel **/
+        JPanel pnl_Status = new JPanel();
+        lbl_Status = new JLabel("Idle");
+        pnl_Status.add(lbl_Status);
+        this.resetStatusPanel();
+        contentPane.add(pnl_Status);
         
         //center on screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -84,13 +98,13 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void processFile() {
-		if (this.txtfProcess.getText().trim().equals("")) {
+		if (this.txtf_Process.getText().trim().equals("")) {
 			JOptionPane.showMessageDialog(this, "Error reading file to process.", "Error reading file", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		File fileToProcess;
 		try {
-			fileToProcess = new File(this.txtfProcess.getText());
+			fileToProcess = new File(this.txtf_Process.getText());
 			if (!fileToProcess.exists() || !fileToProcess.canRead() || !fileToProcess.isFile()) {
 				JOptionPane.showMessageDialog(this, "Error reading file to process.", "Error reading file", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -113,31 +127,43 @@ public class MainFrame extends JFrame {
 	
 	private void readFileThread(File theFile) {
 		turnOffInterface();
+		lbl_Status.setText("Examing file using FFprobe");
 		try {
 			FFProbeExaminer ffprobe = new FFProbeExaminer(theFile);
 			if (ffprobe.isValid()) {
-				System.out.println("VALID");
-				System.out.println(ffprobe.getInfo());
+				this.pnl_Jprobe.setEnabled(true);
+				this.pnl_Jprobe.setDuration(ffprobe.getDuration());
+				this.pnl_Jprobe.setFormat(ffprobe.getFormat());
 			} else {
-				System.out.println("NOT VALID");
+				this.pnl_Jprobe.setEnabled(false);
 			}
 		} catch (Exception err) {
 			err.printStackTrace();
+			resetStatusPanel();
 			JOptionPane.showMessageDialog(this, "Error reading file using FFProbe.", "Error reading file", JOptionPane.ERROR_MESSAGE);
 		}
 		turnOnInterface();
+		resetStatusPanel();
 	}
 	
 	private void turnOffInterface() {
-		txtfProcess.setEnabled(false);
-		btnConvert.setEnabled(false);
+		txtf_Process.setEnabled(false);
+		btn_Convert.setEnabled(false);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
 	private void turnOnInterface() {
-		txtfProcess.setEnabled(true);
-		btnConvert.setEnabled(true);
+		txtf_Process.setEnabled(true);
+		btn_Convert.setEnabled(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private void resetStatusPanel() {
+		lbl_Status.setText("Idle");
+	}
+	
+	private void disablePanels() {
+		pnl_Jprobe.setEnabled(false);
 	}
 
 }
