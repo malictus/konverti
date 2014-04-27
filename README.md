@@ -1,4 +1,4 @@
 konverti
 ========
 
-File conversion GUI
+File conversion GUI for FFMPEG
