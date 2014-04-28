@@ -6,7 +6,7 @@ import malictus.konverti.ConsoleException;
 import malictus.konverti.KonvertiMain;
 import malictus.konverti.KonvertiUtils;
 
-public class FFProbeExaminer implements Examiner {
+public class FFProbeExaminer {
 
 	private File theFile;
 	private boolean isValid = false;
@@ -15,19 +15,20 @@ public class FFProbeExaminer implements Examiner {
 	private String duration = "";
 	
 	public FFProbeExaminer(File theFile) throws IOException, ConsoleException {
+		/*
 		this.theFile = theFile;
 		//first, run a command to see if the file is recognized by FFPROBE
-		String command = "\"" + KonvertiMain.FFPROBE_FILE.getCanonicalPath() + "\" -v quiet -show_error \"" + theFile.getPath() + "\"";
-		String validCheck = KonvertiUtils.runExternalCommand(command);
-		if (validCheck.trim().length() > 1) {
-			isValid = false;
-			return;
-		} else {
+	//	String command = "\"" + KonvertiMain.FFPROBE_FILE.getCanonicalPath() + "\" -v quiet -show_error \"" + theFile.getPath() + "\"";
+//		String validCheck = KonvertiUtils.runExternalCommand(command);
+//		if (validCheck.trim().length() > 1) {
+//			isValid = false;
+//			return;
+//		} else {
 			isValid = true;
 		}
 		//next, run a command to generate all format info for this file
-		command = "\"" + KonvertiMain.FFPROBE_FILE.getCanonicalPath() + "\" -v quiet -show_format \"" + theFile.getPath() + "\"";
-		info = KonvertiUtils.runExternalCommand(command);
+	//	command = "\"" + KonvertiMain.FFPROBE_FILE.getCanonicalPath() + "\" -v quiet -show_format \"" + theFile.getPath() + "\"";
+//		info = KonvertiUtils.runExternalCommand(command);
 		//pull fields out of metadata
 		int startDuration = info.indexOf("duration=") + 9;
 		if (startDuration < 0) {
@@ -47,6 +48,7 @@ public class FFProbeExaminer implements Examiner {
 			return;
 		}
 		format = info.substring(startFormat, endFormat);
+		*/
 	}
 	
 	public boolean isValid() {

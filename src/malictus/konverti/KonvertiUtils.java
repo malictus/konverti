@@ -9,6 +9,8 @@ public class KonvertiUtils {
 	public static String runExternalCommand(String command) throws IOException, ConsoleException {
 		Runtime rt = Runtime.getRuntime();
 		Process proc = rt.exec(command);
+		//TODO: use processbuilder instead --- see http://stackoverflow.com/questions/3468987/executing-another-application-from-java
+		//TODO: go ahead and hard code this as callFFPROBE, call FFMPEG and call FFPLAY, and insert directory prefix
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 	    BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 	    String s = null;	    
