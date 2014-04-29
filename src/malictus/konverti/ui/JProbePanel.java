@@ -12,6 +12,8 @@ public class JProbePanel extends JPanel {
 	JLabel lbl_ffDuration;
 	JLabel lbl_ffFormat;
 	
+	//TODO: show stream data
+	
 	public JProbePanel(MainFrame parent) {
 		super();
 		this.parent = parent;
@@ -27,6 +29,7 @@ public class JProbePanel extends JPanel {
 	}
 	
 	protected void setDuration(String duration) {
+		//TODO turn this into a utility method in Konverti utils
 		float seconds = new Float(duration);
 		long hours = TimeUnit.SECONDS.toHours((long)seconds);
 		long minutes = TimeUnit.SECONDS.toMinutes((long)seconds) - (TimeUnit.SECONDS.toHours((long)seconds)* 60);

@@ -10,8 +10,8 @@ import malictus.konverti.ui.*;
 public class KonvertiMain {
 	
 	/*
-	 * TODO: First, fix console util to have three method instead of one, using existing file prefs
-	 * later, create new opening window
+	 * TODO: 
+	 * 		0. Todos in FFProbeExaminer
 	 * 		1. Include a way to change ffmpeg loc
 	 * 		2. Include credits somehow
 	 * 		3. Include window and drag/drop
@@ -20,6 +20,7 @@ public class KonvertiMain {
 	 * 		6. individually selected items can be opened with ffplay or default app, and shows more info
 	 * 		7. convert button works automatically and uses presets and basic settings
 	 * 		8. advanced button brings up more advanced dialog
+	 * 		9. process shows in separate window and can be canceled
 	 */
 	
 	//file location for ffmpeg, ffprobe, and ffplay, not including trailing slahs
