@@ -29,7 +29,6 @@ public class KonvertiUtils {
 	    BufferedReader br = new BufferedReader(isr);
 	    String line;
 	    while ((line = br.readLine()) != null) {
-	    	System.out.println(line);
 	    	val = val + line + "\n";
 	    }
 	    br.close();
