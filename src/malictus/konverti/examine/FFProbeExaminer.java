@@ -1,6 +1,7 @@
 package malictus.konverti.examine;
 
 import java.io.*;
+import java.util.Hashtable;
 import malictus.konverti.ConsoleException;
 import malictus.konverti.KonvertiUtils;
 
@@ -16,7 +17,8 @@ public class FFProbeExaminer {
 	private String format = "";
 	//the overall duration in seconds (from the format chunk)
 	private String duration = "";
-	//TODO: add stream data type, and add array of them here
+	//the stream data objects for this file
+	private Stream[] streams;
 	
 	/**
 	 * This class is responsible for querying FFProbe to get information about a file
@@ -35,27 +37,43 @@ public class FFProbeExaminer {
 		//next, run a command to generate basic format information for this file
 		command = "-v quiet -show_format";
 		format_info = KonvertiUtils.runFFProbeCommand(command, theFile);
-		//TODO: generate stream info and populate arrays
-		//TODO: a better way of pulling info out of these strings with a single method
+		Hashtable<String, String> format_vals = KonvertiUtils.getHashtableFor(format_info);
 		//pull fields out of metadata
-		int startDuration = format_info.indexOf("duration=") + 9;
-		if (startDuration < 0) {
-			return;
+		duration = format_vals.get("duration");
+		format = format_vals.get("format_long_name");
+		//now generate stream information
+		command = "-v quiet -show_streams";
+		stream_info = KonvertiUtils.runFFProbeCommand(command, theFile);
+		String[] raw_streams = stream_info.split("\\[\\/STREAM\\]");
+		if (raw_streams.length > 1) {
+			//last one will be empty
+			streams = new Stream[raw_streams.length-1];
+			int count = 0;
+			while (count < (raw_streams.length - 1)) {
+				Stream currentStream = new Stream();
+				streams[count] = currentStream;
+				Hashtable<String, String> stream_vals = KonvertiUtils.getHashtableFor(raw_streams[count]);
+				if (stream_vals.get("codec_type") != null) {
+					streams[count].codec_type = stream_vals.get("codec_type");
+				}
+				if (stream_vals.get("codec_long_name") != null) {
+					streams[count].codec_long_name = stream_vals.get("codec_long_name");
+				}
+				if (stream_vals.get("channels") != null) {
+					streams[count].channels = stream_vals.get("channels");
+				}
+				if (stream_vals.get("width") != null) {
+					streams[count].width = stream_vals.get("width");
+				}
+				if (stream_vals.get("height") != null) {
+					streams[count].height = stream_vals.get("height");
+				}
+				if (stream_vals.get("sample_rate") != null) {
+					streams[count].sample_rate = stream_vals.get("sample_rate");
+				}
+				count++;
+			}
 		}
-		int endDuration = format_info.indexOf("\n", startDuration);
-		if (endDuration < 0) {
-			return;
-		}
-		duration = format_info.substring(startDuration, endDuration);
-		int startFormat = format_info.indexOf("format_long_name=") + 17;
-		if (startFormat < 0) {
-			return;
-		}
-		int endFormat = format_info.indexOf("\n", startFormat);
-		if (endFormat < 0) {
-			return;
-		}
-		format = format_info.substring(startFormat, endFormat);
 	}
 	
 	public boolean isValid() {
@@ -78,10 +96,12 @@ public class FFProbeExaminer {
 		return duration;
 	}
 	
-	//TODO: add methods for getting stream data out
-	
 	public File getFile() {
 		return theFile;
+	}
+	
+	public Stream[] getStreams() {
+		return streams;
 	}
 	
 }

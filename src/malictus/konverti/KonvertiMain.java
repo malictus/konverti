@@ -4,24 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
 import java.util.prefs.*;
-import malictus.konverti.ui.*;
+import malictus.konverti.ui.main.*;
 
 //contains the main class for initializing and starting up konverti
 public class KonvertiMain {
-	
-	/*
-	 * TODO: 
-	 * 		0. Todos in FFProbeExaminer
-	 * 		1. Include a way to change ffmpeg loc
-	 * 		2. Include credits somehow
-	 * 		3. Include window and drag/drop
-	 * 		4. Make drop/drag work with folders too, with popup for recursion if needed
-	 * 		5. file info list shows metadat and can be sorted
-	 * 		6. individually selected items can be opened with ffplay or default app, and shows more info
-	 * 		7. convert button works automatically and uses presets and basic settings
-	 * 		8. advanced button brings up more advanced dialog
-	 * 		9. process shows in separate window and can be canceled
-	 */
 	
 	//file location for ffmpeg, ffprobe, and ffplay, not including trailing slahs
 	//if this is blank, they can be called directly from command line 
@@ -49,7 +35,7 @@ public class KonvertiMain {
 			JOptionPane.showMessageDialog(null, "Fatal error. FFmpeg executables are missing or invalid", "FFmpeg missing", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
-		new MainFrame();
+		new MainPanel();
 	}
 	
 	//attempt to find the FFmpeg libraries --- return false if they can't be found

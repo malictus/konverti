@@ -1,6 +1,7 @@
 package malictus.konverti;
 
 import java.io.*;
+import java.util.*;
 
 //utility methods for Konverti
 public class KonvertiUtils {
@@ -35,6 +36,29 @@ public class KonvertiUtils {
 	    isr.close();
 	    is.close();
         return val;
+	}
+	
+	/*
+	 * Parse a string, and look for any lines that are in the form 'xxx=yyy' and parse these into key value pairs.
+	 * This mimics the way ffprobe outputs information.
+	 */
+	public static Hashtable<String, String> getHashtableFor(String stringToParse) {
+		String[] lines = stringToParse.split("\\n");
+		int counter = 0;
+		Hashtable<String, String> hash = new Hashtable<String, String>();
+		while (counter < lines.length) {
+			String line = lines[counter];
+			if (line.contains("=")) {
+				String[] split = line.split("=");
+				if (split.length > 1) {
+					if ((!split[0].trim().equals("")) && (!split[1].trim().equals(""))) {
+						hash.put(split[0], split[1]);
+					}
+				}
+			}
+			counter++;
+		}
+		return hash;
 	}
 
 }
