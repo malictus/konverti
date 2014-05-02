@@ -1,13 +1,9 @@
 package malictus.konverti.ui.main;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
-import java.io.File;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import malictus.konverti.*;
-import malictus.konverti.examine.*;
 
 public class MainPanel extends JFrame {
 	
@@ -15,6 +11,7 @@ public class MainPanel extends JFrame {
 	public static final int HEIGHT = 600;
 	
 	private JPanel contentPane = null;
+	private FileTable tbl_file = null;
 	
 	/*
 	 * TODO: 
@@ -44,6 +41,9 @@ public class MainPanel extends JFrame {
         /*********************************/
         /** set up components on screen **/
         /*********************************/
+        contentPane.setLayout(new BorderLayout());
+        this.tbl_file = new FileTable(this);
+        contentPane.add(tbl_file, BorderLayout.CENTER);        
         
         //center on screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
