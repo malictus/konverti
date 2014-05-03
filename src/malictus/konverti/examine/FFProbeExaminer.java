@@ -103,18 +103,5 @@ public class FFProbeExaminer {
 	public Stream[] getStreams() {
 		return streams;
 	}
-	
-	/*
-	 * Overriding to use in file list
-	 */
-	public boolean equals(Object other) {
-	   if (other instanceof FFProbeExaminer) {
-		   FFProbeExaminer x = (FFProbeExaminer)other;
-		   if (x.getFile().equals(this.getFile())) {
-			   return true;
-		   }
-	   }
-	   return false;
-	}
 
 }

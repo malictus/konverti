@@ -33,7 +33,7 @@ public class FileTable extends JTable {
 				addFilesToList(theFile.listFiles());
 				continue;
 			}
-			if (vec_files.contains(theFile)) {
+			if (alreadyHave(theFile)) {
 				continue;
 			}
 			if (!theFile.canRead() || !theFile.isFile()) {
@@ -50,6 +50,20 @@ public class FileTable extends JTable {
 			}
         } 
 		redoTable();
+	}
+	
+	/*
+	 * Check current vector to see if a file is already in there
+	 */
+	private boolean alreadyHave(File aFile) {
+		int count = 0;
+		while (count < vec_files.size()) {
+			if (vec_files.get(count).getFile().equals(aFile)) {
+				return true;
+			}
+			count++;
+		}
+		return false;
 	}
 	
 	/*
