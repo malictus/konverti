@@ -2,6 +2,7 @@ package malictus.konverti;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 //utility methods for Konverti
 public class KonvertiUtils {
@@ -59,6 +60,40 @@ public class KonvertiUtils {
 			counter++;
 		}
 		return hash;
+	}
+	
+	/*
+	 * Given a number that represents a duration in seconds, return a string representation of that number, formatted correctly
+	 */
+	public static String showDuration(String duration) {
+		float seconds = -1f;
+		try {
+			seconds = new Float(duration);
+		} catch (Exception err) {
+			return "";
+		}
+		if (seconds < 0) {
+			return "";
+		}
+		long hours = TimeUnit.SECONDS.toHours((long)seconds);
+		long minutes = TimeUnit.SECONDS.toMinutes((long)seconds) - (TimeUnit.SECONDS.toHours((long)seconds)* 60);
+		seconds = seconds - (TimeUnit.SECONDS.toMinutes((long)seconds) *60);
+		int secondsint = (int)seconds;
+		String secondsString = "" + secondsint;
+		if (secondsint < 10) {
+			secondsString = "0" + secondsint;
+		}
+		if (hours > 0) {
+			String minuteString = "";
+			if (minutes < 10) {
+				minuteString = "0" + minutes;
+			} else {
+				minuteString = "" + minutes;
+			}
+			return hours + ":" + minuteString + ":" + secondsString;
+		} else {
+			return minutes + ":" + secondsString;
+		}
 	}
 
 }

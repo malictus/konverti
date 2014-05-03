@@ -2,19 +2,23 @@ package malictus.konverti.ui.main;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import malictus.konverti.*;
 
 public class MainPanel extends JFrame {
 	
 	public static final int WIDTH = 700;
 	public static final int HEIGHT = 600;
-	
-	private JPanel contentPane = null;
+	private JPanel contentPanel;
 	private FileTable tbl_file = null;
 	
 	/*
 	 * TODO: 
+	 * 			make it so drag triggers a pop-up progress dialog, with cancel/stop (use commented out code below)
+	 * 			always show a dialog after complete, with number of files added / not added
+	 * 			make column widths vary appropriately
+	 *          make sorting by clicking column work
+	 *  
 	 * 		2. Include credits somehow
 	 * 		3. Include window and drag/drop
 	 * 		4. Make drop/drag work with folders too, with popup for recursion if needed
@@ -25,26 +29,29 @@ public class MainPanel extends JFrame {
 	 * 		9. process shows in separate window and can be canceled
 	 */
 	
-	/**
+	/*
 	 * Initialize the main window
 	 */
 	public MainPanel() {
 		super();
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
-        this.setTitle("Konverti " + KonvertiMain.VERSION);
-        contentPane = new JPanel();
-        this.setContentPane(contentPane);
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        this.setSize(WIDTH, HEIGHT);
-        
+		setTitle("Konverti " + KonvertiMain.VERSION);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        contentPanel = new JPanel();        
         /*********************************/
         /** set up components on screen **/
         /*********************************/
-        contentPane.setLayout(new BorderLayout());
-        this.tbl_file = new FileTable(this);
-        contentPane.add(tbl_file, BorderLayout.CENTER);        
+        contentPanel.setLayout(new BorderLayout());
+	    String[][] data = new String[][]{};
+	    DefaultTableModel model = new DefaultTableModel(data, FileTable.COLUMN_NAMES);
+        tbl_file = new FileTable(model);
+        JScrollPane scroll = new JScrollPane(tbl_file);
+        contentPanel.add(scroll);     
         
+        //finalize
+        contentPanel.setOpaque(true); 
+        setContentPane(contentPanel);
+        setResizable(false);
+        setSize(WIDTH, HEIGHT);
         //center on screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
@@ -56,6 +63,7 @@ public class MainPanel extends JFrame {
         }
         this.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
         this.setVisible(true);
+        setVisible(true);
 	}
 	
 	/*

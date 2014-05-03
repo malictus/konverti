@@ -35,8 +35,17 @@ public class KonvertiMain {
 			JOptionPane.showMessageDialog(null, "Fatal error. FFmpeg executables are missing or invalid", "FFmpeg missing", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
-		new MainPanel();
+		//bring up the window
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
 	}
+	
+	private static void createAndShowGUI() {
+		new MainPanel();
+    }
 	
 	//attempt to find the FFmpeg libraries --- return false if they can't be found
 	private static boolean initFFmpeg() {

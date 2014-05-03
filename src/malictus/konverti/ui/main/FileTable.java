@@ -1,59 +1,72 @@
 package malictus.konverti.ui.main;
 
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
+import malictus.konverti.KonvertiUtils;
+import malictus.konverti.examine.FFProbeExaminer;
 
-public class FileTable extends JScrollPane {
+/*
+ * A drag-and-drop table that runs ffProbe on files and adds them to a list.
+ */
+public class FileTable extends JTable {
 	
-	private MainPanel parent;
+	public final static String[] COLUMN_NAMES = new String[] {"File Name", "File Type", "Duration"};
+	private Vector<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
 	
-	public FileTable(MainPanel parent) {
-		this.parent = parent;
-	    JTable tbl_file = new JTable(new FileTableModel());
-	    this.getViewport().setView(tbl_file);
-	    tbl_file.setFillsViewportHeight(true);
-	    new FileDrop(tbl_file, new FileDrop.Listener() {   
-	    	public void filesDropped( java.io.File[] files ) {   
-	    		for( int i = 0; i < files.length; i++ ) {   
-	    			try {   
-	    				System.out.println(files[i].getCanonicalPath() + "\n" );
-                    }  
-                    catch( java.io.IOException e ) {}
-                } 
+	public FileTable(DefaultTableModel model) {
+		super(model);
+		setFillsViewportHeight(true);
+	    new FileDrop(this, new FileDrop.Listener() {   
+	    	public void filesDropped(File[] files ) {   
+	    		addFilesToList(files);
             } 
         });
 	}
 	
-	public MainPanel getParent() {
-		return parent;
+	private void addFilesToList(File[] files) {
+		for( int i = 0; i < files.length; i++ ) {   
+			File theFile = files[i];
+			if (theFile.isDirectory()) {
+				//recurse
+				addFilesToList(theFile.listFiles());
+				continue;
+			}
+			if (vec_files.contains(theFile)) {
+				continue;
+			}
+			if (!theFile.canRead() || !theFile.isFile()) {
+				continue;
+			}
+			//run ffprobe on file and add to list if it is valid
+			try {
+				FFProbeExaminer ffprobe = new FFProbeExaminer(theFile);
+				if (ffprobe.isValid()) {
+					vec_files.add(ffprobe);
+				} 
+			} catch (Exception err) {
+				continue;
+			}
+        } 
+		redoTable();
 	}
 	
-	private class FileTableModel extends AbstractTableModel {
-        private String[] columnNames = {"File Name", "File Type"};
-        private Object[][] data = {};
- 
-        public int getColumnCount() {
-            return columnNames.length;
-        }
- 
-        public int getRowCount() {
-            return data.length;
-        }
- 
-        public String getColumnName(int col) {
-            return columnNames[col];
-        }
- 
-        public Object getValueAt(int row, int col) {
-            return data[row][col];
-        }
- 
-        public Class<?> getColumnClass(int c) {
-            return getValueAt(0, c).getClass();
-        }
-        
+	/*
+	 * File vector has changed, so redraw the table
+	 */
+	private void redoTable() {
+		String[][] data = new String[vec_files.size()][FileTable.COLUMN_NAMES.length];
+    	int count = 0;
+    	while (count < vec_files.size()) {
+    		FFProbeExaminer x = vec_files.get(count);
+    		data[count][0] = x.getFile().getName();
+    		data[count][1] = x.getFormat();
+    		data[count][2] = KonvertiUtils.showDuration(x.getDuration());
+    		count++;
+    	}
+    	DefaultTableModel dtm = (DefaultTableModel)this.getModel();
+    	dtm.setDataVector(data, COLUMN_NAMES);
     }
-	
-	
 
 }
