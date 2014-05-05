@@ -1,6 +1,7 @@
 package malictus.konverti.ui.main;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import malictus.konverti.*;
@@ -12,11 +13,12 @@ public class MainPanel extends JFrame {
 	private JPanel contentPanel;
 	private FileTable tbl_file = null;
 	private JLabel lbl_status;
+	private JButton btn_removeAll;
+    private JButton btn_removeSelected;
 	
 	/*
 	 * TODO: 
 	 * 			create cancel button that cancels but still adds what has already been created
-	 * 			remove button (which allows multiple selection) and clear all button
 	 * 			when only one selected, show additionl info in dialog box, and ffplay button and default app open button
 	 *  
 	 * 		2. Include credits somehow
@@ -43,11 +45,30 @@ public class MainPanel extends JFrame {
         tbl_file = new FileTable(model, this);
         JScrollPane scroll = new JScrollPane(tbl_file);
         contentPanel.add(scroll, BorderLayout.CENTER);  
-        //north panel - just a label for now
+        //north panel
         JPanel pnl_north = new JPanel();
         JLabel lbl_drag = new JLabel("Drag and drop files and folders to be processed below.");
-        pnl_north.setLayout(new FlowLayout());
-        pnl_north.add(lbl_drag);
+        pnl_north.setLayout(new BorderLayout());
+        pnl_north.add(lbl_drag, BorderLayout.WEST);
+        JPanel pnl_upper_buttons = new JPanel();
+        pnl_upper_buttons.setLayout(new FlowLayout());
+        btn_removeAll = new JButton("Remove All");
+        btn_removeAll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                tbl_file.removeAllFiles();
+            }
+        }); 
+        btn_removeAll.setEnabled(false);
+        btn_removeSelected = new JButton("Remove Selected");
+        btn_removeSelected.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                tbl_file.removeSelectedFiles();
+            }
+        });  
+        btn_removeSelected.setEnabled(false);
+        pnl_upper_buttons.add(btn_removeAll);
+        pnl_upper_buttons.add(btn_removeSelected);
+        pnl_north.add(pnl_upper_buttons, BorderLayout.EAST);
         contentPanel.add(pnl_north, BorderLayout.NORTH);
         //south panel - status and progress components
         JPanel pnl_south = new JPanel();
@@ -90,6 +111,22 @@ public class MainPanel extends JFrame {
 	
 	protected void setStatus(String status) {
 		this.lbl_status.setText("Status: " + status);
+	}
+	
+	/**
+	 * Triggered when changes are made to the file table
+	 */
+	protected void updateTheUI(int selectedRows, int totalRows) {
+		if (totalRows > 0) {
+			this.btn_removeAll.setEnabled(true);
+		} else {
+			this.btn_removeAll.setEnabled(false);
+		}
+		if (selectedRows > 0) {
+			this.btn_removeSelected.setEnabled(true);
+		} else {
+			this.btn_removeSelected.setEnabled(false);
+		}
 	}
 
 }

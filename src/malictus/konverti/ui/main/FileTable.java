@@ -3,7 +3,8 @@ package malictus.konverti.ui.main;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.*;
+import javax.swing.table.*;
 import malictus.konverti.KonvertiUtils;
 import malictus.konverti.examine.FFProbeExaminer;
 
@@ -29,6 +30,12 @@ public class FileTable extends JTable {
 		this.parentPanel = parentPanel;
 		setFillsViewportHeight(true);
 		fixColumnWidths();
+		final MainPanel PARENT_PANEL = parentPanel;
+		getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+	        	PARENT_PANEL.updateTheUI(getSelectedRowCount(), getRowCount());
+	        }
+	    });
 	    new FileDrop(this, new FileDrop.Listener() {   
 	    	public void filesDropped(File[] files ) {   
 	    		handleFileDrop(files);
@@ -44,11 +51,43 @@ public class FileTable extends JTable {
 	};
 	
 	/**
+	 * Get method for the list of files
+	 * @return the list of files that are currently in this table
+	 */
+	protected List<FFProbeExaminer> getFFProbeFiles() {
+		return vec_files;
+	}
+	
+	/**
+	 * Remove all files from the file list and update UI
+	 */
+	protected void removeAllFiles() {
+		this.vec_files.clear();
+		redoTable();
+		parentPanel.setStatus("removed all files from file list");
+	}
+	
+	/**
+	 * Remove selected files from the file list and update UI
+	 */
+	protected void removeSelectedFiles() {
+		int[] selected = this.getSelectedRows();
+		if (selected.length < 1) {
+			return;
+		}
+		for( int i = selected.length - 1; i >= 0; i-- ) {   
+			this.vec_files.remove(selected[i]);
+		}
+		redoTable();
+		parentPanel.setStatus("removed " + selected.length + " files from file list");
+	}
+	
+	/**
 	 * Make the duration column small and fixed width
 	 */
 	private void fixColumnWidths() {
 		setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
-        javax.swing.table.TableColumn durationColumn = getColumn(FileTable.COLUMN_NAMES[2]);
+        TableColumn durationColumn = getColumn(FileTable.COLUMN_NAMES[2]);
         durationColumn.setMinWidth(80);
         durationColumn.setMaxWidth(80);
 	}
@@ -169,6 +208,7 @@ public class FileTable extends JTable {
     	DefaultTableModel dtm = (DefaultTableModel)this.getModel();
     	dtm.setDataVector(data, COLUMN_NAMES);
     	this.fixColumnWidths();
+    	parentPanel.updateTheUI(getSelectedRowCount(), getRowCount());
     }
 
 }
