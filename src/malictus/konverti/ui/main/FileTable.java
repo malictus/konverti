@@ -7,33 +7,43 @@ import javax.swing.table.DefaultTableModel;
 import malictus.konverti.KonvertiUtils;
 import malictus.konverti.examine.FFProbeExaminer;
 
-/*
+/**
  * A drag-and-drop table that runs ffProbe on files and adds them to a list.
+ * @author Jim Halliday
  */
 public class FileTable extends JTable {
 	
 	public final static String[] COLUMN_NAMES = new String[] {"File Name", "File Type", "Duration"};
 	private List<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
+	private MainPanel parentPanel;
+	private int count_files;
+	private int good_files;
 	
-	public FileTable(DefaultTableModel model) {
+	/**
+	 * Create a FileTable object
+	 * @param model the table model to use for this table. The table model can be initialized with a simple, empty DefaultTableModel object.
+	 * @param parentPanel the parent panel for this table
+	 */
+	public FileTable(DefaultTableModel model, MainPanel parentPanel) {
 		super(model);
+		this.parentPanel = parentPanel;
 		setFillsViewportHeight(true);
 		fixColumnWidths();
 	    new FileDrop(this, new FileDrop.Listener() {   
 	    	public void filesDropped(File[] files ) {   
-	    		addFilesToList(files);
+	    		handleFileDrop(files);
             } 
         });
 	}
 	
-	/*
+	/**
 	 * Override from JTable to disallow user edits to fields
 	 */
 	public boolean isCellEditable(int row, int column) {                
         return false;               
 	};
 	
-	/*
+	/**
 	 * Make the duration column small and fixed width
 	 */
 	private void fixColumnWidths() {
@@ -43,18 +53,74 @@ public class FileTable extends JTable {
         durationColumn.setMaxWidth(80);
 	}
 	
-	private void addFilesToList(File[] files) {
+	/**
+	 * Called when files are dropped onto this table.
+	 * @param files the array of files that have been dropped onto the table
+	 */
+	private void handleFileDrop(File[] files) {
+		if (!this.isEnabled()) {
+			return;
+		}
+		//tell parent we're starting this
+		parentPanel.turnOffInterface();
+		//start the thread to do the actual file examination
+		final File[] theFiles = files;
+		Runnable q = new Runnable() {
+			public void run() {
+				startFileExamine(theFiles);
+		    }
+		};
+		Thread t = new Thread(q);
+		t.start();
+	}
+	
+	/**
+	 * Called from within the file examine thread. This examines and processes the files with FFprobe.
+	 * @param theFiles
+	 */
+	private void startFileExamine(File[] theFiles) {
+		parentPanel.setStatus("counting files");
+		int numFiles = KonvertiUtils.countFiles(theFiles);
+		parentPanel.setStatus("total number of files to process: " + numFiles);
+		count_files = 0;
+		good_files = 0;
+		addFilesToList(theFiles, numFiles);
+		if (good_files > 0) {
+			Collections.sort(vec_files);
+			redoTable();
+		}
+		if (good_files == 0) {
+			parentPanel.setStatus("finished processing. No new valid files added to list.");
+		} else if (good_files == 1) {
+			parentPanel.setStatus("finished processing. " + good_files + " valid file added to list.");
+		} else {
+			parentPanel.setStatus("finished processing. " + good_files + " valid files added to list.");
+		}
+		parentPanel.turnOnInterface();
+	}
+	
+	/**
+	 * Recursive method to add files to the list of files if they quality
+	 * @param files the files to add to the list
+	 * @param numFiles the total number of files to be processed, so that the UI can show progress
+	 */
+	private void addFilesToList(File[] files, final int numFiles) {
 		for( int i = 0; i < files.length; i++ ) {   
 			File theFile = files[i];
 			if (theFile.isDirectory()) {
 				//recurse
-				addFilesToList(theFile.listFiles());
+				addFilesToList(theFile.listFiles(), numFiles);
 				continue;
 			}
+			count_files++;
+			parentPanel.setStatus("processing file " + count_files + " of " + numFiles + " -- " + good_files + " valid files added to list so far");
 			if (alreadyHave(theFile)) {
 				continue;
 			}
 			if (!theFile.canRead() || !theFile.isFile()) {
+				continue;
+			}
+			if (KonvertiUtils.filenameIsInBlackList(theFile.getName())) {
 				continue;
 			}
 			//run ffprobe on file and add to list if it is valid
@@ -62,20 +128,21 @@ public class FileTable extends JTable {
 				FFProbeExaminer ffprobe = new FFProbeExaminer(theFile);
 				if (ffprobe.isValid()) {
 					vec_files.add(ffprobe);
+					good_files++;
 				} 
 			} catch (Exception err) {
 				continue;
 			}
         } 
-		redoTable();
 	}
 	
-	/*
-	 * Check current vector to see if a file is already in there
+	/**
+	 * Check the current vector of files to process to see if a file is already in there
+	 * @param aFile the new file to check
+	 * @return true if this file is already in the vector of files
 	 */
 	private boolean alreadyHave(File aFile) {
 		int count = 0;
-		Collections.sort(vec_files);
 		while (count < vec_files.size()) {
 			if (vec_files.get(count).getFile().equals(aFile)) {
 				return true;
@@ -85,8 +152,8 @@ public class FileTable extends JTable {
 		return false;
 	}
 	
-	/*
-	 * File vector has changed, so redraw the table
+	/**
+	 * Called after editing the files to be processed list, this updates the UI accordingly.
 	 */
 	private void redoTable() {
 		//sort files

@@ -6,10 +6,13 @@ import javax.swing.*;
 import java.util.prefs.*;
 import malictus.konverti.ui.main.*;
 
-//contains the main class for initializing and starting up konverti
+/**
+ * Contains the main method for Konverti and startup procedures, including testing for FFMPEG libraries.
+ * @author Jim Halliday
+ */
 public class KonvertiMain {
 	
-	//file location for ffmpeg, ffprobe, and ffplay, not including trailing slahs
+	//file folder location for ffmpeg, ffprobe, and ffplay, not including trailing slash
 	//if this is blank, they can be called directly from command line 
 	public static String FFMPEG_BIN_FOLDER = "";
 	//current version
@@ -47,7 +50,10 @@ public class KonvertiMain {
 		new MainPanel();
     }
 	
-	//attempt to find the FFmpeg libraries --- return false if they can't be found
+	/**
+	 * attempt to find the FFmpeg libraries 
+	 * @return false if libraries can't be found, true otherwise
+	 */
 	private static boolean initFFmpeg() {
 		//first, see if all binaries will just work on command-line automatically
 		if (testFFmpeg()) {
@@ -94,10 +100,19 @@ public class KonvertiMain {
 		return false;
 	}
 	
+	/**
+	 * Test FFmpeg libraries against the command-line with no folder parameter
+	 * @return true if the ffmpeg, ffprobe, and ffplay executable commands all pass
+	 */
 	private static boolean testFFmpeg() {
 		return testFFmpeg("");
 	}
 	
+	/**
+	 * Test for presence of FFmpeg in a given folder location.
+	 * @param filePrefix File location of ffmpeg libraries. If empty string is passed, commands will be run directly on the command line.
+	 * @return true if the ffmpeg, ffprobe, and ffplay executable commands all pass
+	 */
 	private static boolean testFFmpeg(String filePrefix) {
 		try {
 			Runtime rt = Runtime.getRuntime();

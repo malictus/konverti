@@ -7,7 +7,6 @@ import java.io.*;
  * Adapted from http://iharder.sourceforge.net/current/java/filedrop/
  * which is in the public domain. Thanks!
  */
-
 public class FileDrop {
 	
     private transient javax.swing.border.Border normalBorder;
@@ -210,8 +209,6 @@ public class FileDrop {
         }
         return new File[0];
      }
-     // END 2007-09-12 Nathan Blomquist -- Linux (KDE/Gnome) support added.
-     
     
     private void makeDropTarget( final java.awt.Component c, boolean recursive )
     {
@@ -265,8 +262,6 @@ public class FileDrop {
         int i = 0;
         while( !ok && i < flavors.length )
         {   
-            // BEGIN 2007-09-12 Nathan Blomquist -- Linux (KDE/Gnome) support added.
-            // Is the flavor a file list?
             final DataFlavor curFlavor = flavors[i];
             if( curFlavor.equals( java.awt.datatransfer.DataFlavor.javaFileListFlavor ) ||
                 curFlavor.isRepresentationClassReader()){
@@ -309,20 +304,6 @@ public class FileDrop {
     
     
 /* ********  I N N E R   C L A S S  ******** */    
-    
-    
-    /**
-     * This is the event that is passed to the
-     * {@link FileDropListener#filesDropped filesDropped(...)} method in
-     * your {@link FileDropListener} when files are dropped onto
-     * a registered drop target.
-     *
-     * <p>I'm releasing this code into the Public Domain. Enjoy.</p>
-     * 
-     * @author  Robert Harder
-     * @author  rob@iharder.net
-     * @version 1.2
-     */
     public static class Event extends java.util.EventObject {
 
         private java.io.File[] files;

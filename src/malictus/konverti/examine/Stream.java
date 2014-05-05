@@ -1,7 +1,12 @@
 package malictus.konverti.examine;
 
 /*
+ * 
+ */
+
+/**
  * A simple class that represents a single stream inside a file.
+ * @author Jim Halliday
  */
 public class Stream {
 	

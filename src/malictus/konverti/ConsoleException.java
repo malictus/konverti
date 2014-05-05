@@ -1,6 +1,9 @@
 package malictus.konverti;
 
-//a simple class to catch errors from the console
+/**
+ * A simple class to catch errors from the command line.
+ * @author Jim Halliday
+ */
 public class ConsoleException extends Exception {
 
 	public ConsoleException() {

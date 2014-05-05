@@ -5,6 +5,10 @@ import java.util.Hashtable;
 import malictus.konverti.ConsoleException;
 import malictus.konverti.KonvertiUtils;
 
+/**
+ * This class represents a single file that has been examine by FFprobe, and it encapsulates the data from that command.
+ * @author Jim Halliday
+ */
 public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 
 	private File theFile;
@@ -21,7 +25,10 @@ public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 	private Stream[] streams;
 	
 	/**
-	 * This class is responsible for querying FFProbe to get information about a file
+	 * Initiate on FFProbeExaminer object
+	 * @param theFile the file to examine with FFprobe
+	 * @throws IOException if file error occurs
+	 * @throws ConsoleException if console error occurs
 	 */
 	public FFProbeExaminer(File theFile) throws IOException, ConsoleException {
 		this.theFile = theFile;
@@ -103,9 +110,9 @@ public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 	public Stream[] getStreams() {
 		return streams;
 	}
-
-	/*
-	 * Allows sorting in table correctly
+	
+	/**
+	 * An override of the compareTo method to sort files based on file name in the files list 
 	 */
 	@Override 
 	public int compareTo(FFProbeExaminer other_probe) {

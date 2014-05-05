@@ -11,17 +11,15 @@ public class MainPanel extends JFrame {
 	public static final int HEIGHT = 600;
 	private JPanel contentPanel;
 	private FileTable tbl_file = null;
+	private JLabel lbl_status;
 	
 	/*
 	 * TODO: 
-	 * 			allow multiple selection, and then remove selected button lights up whenever any selected
-	 * 			when only one selected, show additionl info in dialog box, and ffplay button
-	 * 			make it so drag triggers a pop-up progress dialog, with cancel/stop (use commented out code below)
-	 * 			always show a dialog after complete, with number of files added / not added
-	 *          don't show text files and image files, and any other bogus files that pass ffprobe
+	 * 			create cancel button that cancels but still adds what has already been created
+	 * 			remove button (which allows multiple selection) and clear all button
+	 * 			when only one selected, show additionl info in dialog box, and ffplay button and default app open button
 	 *  
 	 * 		2. Include credits somehow
-	 * 		6. individually selected items can be opened with ffplay or default app, and shows more info
 	 * 		7. convert button works automatically and uses presets and basic settings
 	 * 		8. advanced button brings up more advanced dialog
 	 * 		9. process shows in separate window and can be canceled
@@ -42,15 +40,23 @@ public class MainPanel extends JFrame {
         //file drag/drop table (center)
 	    String[][] data = new String[][]{};
 	    DefaultTableModel model = new DefaultTableModel(data, FileTable.COLUMN_NAMES);
-        tbl_file = new FileTable(model);
+        tbl_file = new FileTable(model, this);
         JScrollPane scroll = new JScrollPane(tbl_file);
         contentPanel.add(scroll, BorderLayout.CENTER);  
-        //north panel
+        //north panel - just a label for now
         JPanel pnl_north = new JPanel();
         JLabel lbl_drag = new JLabel("Drag and drop files and folders to be processed below.");
         pnl_north.setLayout(new FlowLayout());
         pnl_north.add(lbl_drag);
         contentPanel.add(pnl_north, BorderLayout.NORTH);
+        //south panel - status and progress components
+        JPanel pnl_south = new JPanel();
+        FlowLayout flow = new FlowLayout();
+        flow.setAlignment(FlowLayout.LEFT);
+        pnl_south.setLayout(flow);
+        lbl_status = new JLabel("Status: Idle");
+        pnl_south.add(lbl_status);
+        contentPanel.add(pnl_south, BorderLayout.SOUTH);
         
         //finalize
         contentPanel.setOpaque(true); 
@@ -72,76 +78,18 @@ public class MainPanel extends JFrame {
         setVisible(true);
 	}
 	
-	/*
-	private void processFile() {
-		if (this.txtf_Process.getText().trim().equals("")) {
-			JOptionPane.showMessageDialog(this, "Error reading file to process.", "Error reading file", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-		File fileToProcess;
-		try {
-			fileToProcess = new File(this.txtf_Process.getText());
-			if (!fileToProcess.exists() || !fileToProcess.canRead() || !fileToProcess.isFile()) {
-				JOptionPane.showMessageDialog(this, "Error reading file to process.", "Error reading file", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		} catch (Exception err) {
-			err.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error reading file to process.", "Error reading file", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		//start the thread to do the actual file examination
-		final File theFile = fileToProcess;
-		Runnable q = new Runnable() {
-			public void run() {
-				readFileThread(theFile);
-		    }
-		};
-		Thread t = new Thread(q);
-		t.start();
+	protected void turnOffInterface() {
+		tbl_file.setEnabled(false);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
-	private void readFileThread(File theFile) {
-		turnOffInterface();
-		lbl_Status.setText("Examing file using FFprobe");
-		try {
-			FFProbeExaminer ffprobe = new FFProbeExaminer(theFile);
-			if (ffprobe.isValid()) {
-				this.pnl_Jprobe.setEnabled(true);
-				this.pnl_Jprobe.setDuration(ffprobe.getDuration());
-				this.pnl_Jprobe.setFormat(ffprobe.getFormat());
-			} else {
-				this.pnl_Jprobe.setEnabled(false);
-			}
-		} catch (Exception err) {
-			err.printStackTrace();
-			resetStatusPanel();
-			JOptionPane.showMessageDialog(this, "Error reading file using FFProbe.", "Error reading file", JOptionPane.ERROR_MESSAGE);
-		}
-		turnOnInterface();
-		resetStatusPanel();
+	protected void turnOnInterface() {
+		tbl_file.setEnabled(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	private void turnOffInterface() {
-		txtf_Process.setEnabled(false);
-		btn_Convert.setEnabled(false);
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	protected void setStatus(String status) {
+		this.lbl_status.setText("Status: " + status);
 	}
-	
-	private void turnOnInterface() {
-		txtf_Process.setEnabled(true);
-		btn_Convert.setEnabled(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
-	private void resetStatusPanel() {
-		lbl_Status.setText("Idle");
-	}
-	
-	private void disablePanels() {
-		pnl_Jprobe.setEnabled(false);
-	}
-	
-	*/
 
 }
