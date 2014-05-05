@@ -14,15 +14,13 @@ public class MainPanel extends JFrame {
 	
 	/*
 	 * TODO: 
+	 * 			allow multiple selection, and then remove selected button lights up whenever any selected
+	 * 			when only one selected, show additionl info in dialog box, and ffplay button
 	 * 			make it so drag triggers a pop-up progress dialog, with cancel/stop (use commented out code below)
 	 * 			always show a dialog after complete, with number of files added / not added
-	 * 			make column widths vary appropriately
-	 *          make sorting by clicking column work
+	 *          don't show text files and image files, and any other bogus files that pass ffprobe
 	 *  
 	 * 		2. Include credits somehow
-	 * 		3. Include window and drag/drop
-	 * 		4. Make drop/drag work with folders too, with popup for recursion if needed
-	 * 		5. file info list shows metadat and can be sorted
 	 * 		6. individually selected items can be opened with ffplay or default app, and shows more info
 	 * 		7. convert button works automatically and uses presets and basic settings
 	 * 		8. advanced button brings up more advanced dialog
@@ -41,16 +39,24 @@ public class MainPanel extends JFrame {
         /** set up components on screen **/
         /*********************************/
         contentPanel.setLayout(new BorderLayout());
+        //file drag/drop table (center)
 	    String[][] data = new String[][]{};
 	    DefaultTableModel model = new DefaultTableModel(data, FileTable.COLUMN_NAMES);
         tbl_file = new FileTable(model);
         JScrollPane scroll = new JScrollPane(tbl_file);
-        contentPanel.add(scroll);     
+        contentPanel.add(scroll, BorderLayout.CENTER);  
+        //north panel
+        JPanel pnl_north = new JPanel();
+        JLabel lbl_drag = new JLabel("Drag and drop files and folders to be processed below.");
+        pnl_north.setLayout(new FlowLayout());
+        pnl_north.add(lbl_drag);
+        contentPanel.add(pnl_north, BorderLayout.NORTH);
         
         //finalize
         contentPanel.setOpaque(true); 
         setContentPane(contentPanel);
-        setResizable(false);
+        setResizable(true);
+        this.setMinimumSize(new Dimension(WIDTH, HEIGHT));;
         setSize(WIDTH, HEIGHT);
         //center on screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

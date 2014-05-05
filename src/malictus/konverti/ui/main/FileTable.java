@@ -13,16 +13,34 @@ import malictus.konverti.examine.FFProbeExaminer;
 public class FileTable extends JTable {
 	
 	public final static String[] COLUMN_NAMES = new String[] {"File Name", "File Type", "Duration"};
-	private Vector<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
+	private List<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
 	
 	public FileTable(DefaultTableModel model) {
 		super(model);
 		setFillsViewportHeight(true);
+		fixColumnWidths();
 	    new FileDrop(this, new FileDrop.Listener() {   
 	    	public void filesDropped(File[] files ) {   
 	    		addFilesToList(files);
             } 
         });
+	}
+	
+	/*
+	 * Override from JTable to disallow user edits to fields
+	 */
+	public boolean isCellEditable(int row, int column) {                
+        return false;               
+	};
+	
+	/*
+	 * Make the duration column small and fixed width
+	 */
+	private void fixColumnWidths() {
+		setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
+        javax.swing.table.TableColumn durationColumn = getColumn(FileTable.COLUMN_NAMES[2]);
+        durationColumn.setMinWidth(80);
+        durationColumn.setMaxWidth(80);
 	}
 	
 	private void addFilesToList(File[] files) {
@@ -57,6 +75,7 @@ public class FileTable extends JTable {
 	 */
 	private boolean alreadyHave(File aFile) {
 		int count = 0;
+		Collections.sort(vec_files);
 		while (count < vec_files.size()) {
 			if (vec_files.get(count).getFile().equals(aFile)) {
 				return true;
@@ -70,6 +89,7 @@ public class FileTable extends JTable {
 	 * File vector has changed, so redraw the table
 	 */
 	private void redoTable() {
+		//sort files
 		String[][] data = new String[vec_files.size()][FileTable.COLUMN_NAMES.length];
     	int count = 0;
     	while (count < vec_files.size()) {
@@ -81,6 +101,7 @@ public class FileTable extends JTable {
     	}
     	DefaultTableModel dtm = (DefaultTableModel)this.getModel();
     	dtm.setDataVector(data, COLUMN_NAMES);
+    	this.fixColumnWidths();
     }
 
 }

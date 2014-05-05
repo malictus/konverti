@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import malictus.konverti.ConsoleException;
 import malictus.konverti.KonvertiUtils;
 
-public class FFProbeExaminer {
+public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 
 	private File theFile;
 	private boolean isValid = false;
@@ -102,6 +102,14 @@ public class FFProbeExaminer {
 	
 	public Stream[] getStreams() {
 		return streams;
+	}
+
+	/*
+	 * Allows sorting in table correctly
+	 */
+	@Override 
+	public int compareTo(FFProbeExaminer other_probe) {
+		return this.getFile().getName().compareTo(other_probe.getFile().getName());
 	}
 
 }
