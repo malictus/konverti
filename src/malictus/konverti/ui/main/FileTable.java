@@ -19,6 +19,8 @@ public class FileTable extends JTable {
 	private MainPanel parentPanel;
 	private int count_files;
 	private int good_files;
+	private boolean cancel_trigger = false;
+	private boolean thread_is_running = false;
 	
 	/**
 	 * Create a FileTable object
@@ -83,6 +85,15 @@ public class FileTable extends JTable {
 	}
 	
 	/**
+	 * Cancel button has been pressed while files are processing. Stop process and clean up UI.
+	 */
+	protected void handleCancel() {
+		if (thread_is_running) {
+			cancel_trigger = true;
+		}
+	}
+	
+	/**
 	 * Make the duration column small and fixed width
 	 */
 	private void fixColumnWidths() {
@@ -118,6 +129,8 @@ public class FileTable extends JTable {
 	 * @param theFiles
 	 */
 	private void startFileExamine(File[] theFiles) {
+		thread_is_running = true;
+		parentPanel.btn_cancel.setEnabled(true);
 		parentPanel.setStatus("counting files");
 		int numFiles = KonvertiUtils.countFiles(theFiles);
 		parentPanel.setStatus("total number of files to process: " + numFiles);
@@ -128,6 +141,7 @@ public class FileTable extends JTable {
 			Collections.sort(vec_files);
 			redoTable();
 		}
+		cancel_trigger = false;
 		if (good_files == 0) {
 			parentPanel.setStatus("finished processing. No new valid files added to list.");
 		} else if (good_files == 1) {
@@ -135,6 +149,8 @@ public class FileTable extends JTable {
 		} else {
 			parentPanel.setStatus("finished processing. " + good_files + " valid files added to list.");
 		}
+		parentPanel.btn_cancel.setEnabled(false);
+		thread_is_running = false;
 		parentPanel.turnOnInterface();
 	}
 	
@@ -145,6 +161,9 @@ public class FileTable extends JTable {
 	 */
 	private void addFilesToList(File[] files, final int numFiles) {
 		for( int i = 0; i < files.length; i++ ) {   
+			if (cancel_trigger) {
+				return;
+			}
 			File theFile = files[i];
 			if (theFile.isDirectory()) {
 				//recurse

@@ -22,7 +22,7 @@ public class KonvertiUtils {
 	}
 	
 	/**
-	 * Run FFProbe command without a file parameter (only command line options, such as version, can be used in this way)
+	 * Run FFProbe command 
 	 * @param command command-line options to pass to ffprobe
 	 * @param fileToProcess the file to be processed by FFprobe; or null for command to be run without a file parameter
 	 * @return the text output from running the command
@@ -33,6 +33,35 @@ public class KonvertiUtils {
 		command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffprobe\" " + command;
 		if (fileToProcess != null) {
 			command = command + " \"" + fileToProcess.getAbsolutePath() + "\"";
+		}
+		String val = "";
+		ProcessBuilder builder = new ProcessBuilder(command);
+	    final Process process = builder.start();
+	    InputStream is = process.getInputStream();
+	    InputStreamReader isr = new InputStreamReader(is);
+	    BufferedReader br = new BufferedReader(isr);
+	    String line;
+	    while ((line = br.readLine()) != null) {
+	    	val = val + line + "\n";
+	    }
+	    br.close();
+	    isr.close();
+	    is.close();
+        return val;
+	}
+	
+	/**
+	 * Run FFPlay command without a file parameter (only command line options, such as version, can be used in this way)
+	 * @param command command-line options to pass to ffprobe
+	 * @param fileToProcess the file to be processed by FFprobe; or null for command to be run without a file parameter
+	 * @return the text output from running the command
+	 * @throws IOException if file error occurs
+	 * @throws ConsoleException if problem occurs with the command line call
+	 */
+	public static String runFFPlayCommand(File fileToOpen) throws IOException, ConsoleException {
+		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffplay\" ";
+		if (fileToOpen != null) {
+			command = command + " \"" + fileToOpen.getAbsolutePath() + "\"";
 		}
 		String val = "";
 		ProcessBuilder builder = new ProcessBuilder(command);
