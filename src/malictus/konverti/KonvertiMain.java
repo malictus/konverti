@@ -12,7 +12,7 @@ import malictus.konverti.ui.main.*;
  */
 public class KonvertiMain {
 	
-	//file folder location for ffmpeg, ffprobe, and ffplay, not including trailing slash
+	//file folder location for ffmpeg and ffprobe, not including trailing slash
 	//if this is blank, they can be called directly from command line 
 	public static String FFMPEG_BIN_FOLDER = "";
 	//current version
@@ -102,7 +102,7 @@ public class KonvertiMain {
 	
 	/**
 	 * Test FFmpeg libraries against the command-line with no folder parameter
-	 * @return true if the ffmpeg, ffprobe, and ffplay executable commands all pass
+	 * @return true if the ffmpeg and ffprobe executable commands all pass
 	 */
 	private static boolean testFFmpeg() {
 		return testFFmpeg("");
@@ -111,7 +111,7 @@ public class KonvertiMain {
 	/**
 	 * Test for presence of FFmpeg in a given folder location.
 	 * @param filePrefix File location of ffmpeg libraries. If empty string is passed, commands will be run directly on the command line.
-	 * @return true if the ffmpeg, ffprobe, and ffplay executable commands all pass
+	 * @return true if the ffmpeg and ffprobe executable commands pass
 	 */
 	private static boolean testFFmpeg(String filePrefix) {
 		try {
@@ -121,7 +121,6 @@ public class KonvertiMain {
 			}
 			//we don't even need to check these ourselves -- they will throw exceptions if they don't work
 			rt.exec(filePrefix + "ffprobe -version");
-			rt.exec(filePrefix + "ffplay -version");
 			rt.exec(filePrefix + "ffmpeg -version"); 
 		} catch (IOException err) {
 			return false;
