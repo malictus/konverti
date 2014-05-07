@@ -17,7 +17,8 @@ public class MainPanel extends JFrame {
 	private JButton btn_removeAll;
     private JButton btn_removeSelected;
     protected JButton btn_cancel;
-    private JButton btn_default;
+    private JButton btn_play;
+    private JTextArea textArea;
 	
 	/*
 	 * Initialize the main window
@@ -45,15 +46,25 @@ public class MainPanel extends JFrame {
         contentPanel.add(pnl_north, BorderLayout.NORTH);
         //east panel - additional buttons
         JPanel pnl_east = new JPanel();
-        pnl_east.setLayout(new FlowLayout());
-        btn_default = new JButton("Play");
-        btn_default.addActionListener(new ActionListener() {
+        pnl_east.setLayout(new BorderLayout());
+        JPanel pnl_play_button = new JPanel();
+        pnl_play_button.setLayout(new FlowLayout());
+        btn_play = new JButton("Play");
+        btn_play.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 openWithDefault();
             }
         }); 
-        btn_default.setEnabled(false);
-        pnl_east.add(btn_default);
+        btn_play.setEnabled(false);
+        pnl_play_button.add(btn_play);
+        pnl_east.add(pnl_play_button, BorderLayout.NORTH);
+        textArea = new JTextArea(15, 25);
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea); 
+        JPanel pnl_text = new JPanel();
+        pnl_text.setLayout(new FlowLayout());
+        pnl_text.add(scrollPane);
+        pnl_east.add(pnl_text, BorderLayout.EAST);
         contentPanel.add(pnl_east, BorderLayout.EAST);
         //south panel - status and cancel
         JPanel pnl_south = new JPanel();
@@ -112,7 +123,7 @@ public class MainPanel extends JFrame {
 		tbl_file.setEnabled(false);
 		this.btn_removeAll.setEnabled(false);
 		this.btn_removeSelected.setEnabled(false);
-		this.btn_default.setEnabled(false);
+		this.btn_play.setEnabled(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
@@ -141,9 +152,9 @@ public class MainPanel extends JFrame {
 			this.btn_removeSelected.setEnabled(false);
 		}
 		if (selectedRows == 1) {
-			this.btn_default.setEnabled(true);
+			this.btn_play.setEnabled(true);
 		} else {
-			this.btn_default.setEnabled(false);
+			this.btn_play.setEnabled(false);
 		}
 	}
 	
