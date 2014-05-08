@@ -3,9 +3,13 @@ package malictus.konverti.ui.main;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
 import malictus.konverti.*;
+import malictus.konverti.examine.FFProbeExaminer;
+import malictus.konverti.examine.Stream;
 
 public class MainPanel extends JFrame {
 	
@@ -18,7 +22,16 @@ public class MainPanel extends JFrame {
     private JButton btn_removeSelected;
     protected JButton btn_cancel;
     private JButton btn_play;
-    private JTextArea textArea;
+    private JTextArea txt_fileinfo;
+    //TODO put these in interface
+    private JComboBox<String> comb_preset;
+    private JButton btn_convert;
+    private JButton btn_editpresets;
+    private JButton btn_advanced;
+    private JCheckBox chk_same_folder;
+    private JButton btn_target_folder;
+    private JTextField txt_target;
+    private JLabel lbl_credits;
 	
 	/*
 	 * Initialize the main window
@@ -58,9 +71,11 @@ public class MainPanel extends JFrame {
         btn_play.setEnabled(false);
         pnl_play_button.add(btn_play);
         pnl_east.add(pnl_play_button, BorderLayout.NORTH);
-        textArea = new JTextArea(15, 25);
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea); 
+        txt_fileinfo = new JTextArea(13, 24);
+        txt_fileinfo.setEditable(false);
+        Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
+        txt_fileinfo.setFont(font);
+        JScrollPane scrollPane = new JScrollPane(txt_fileinfo); 
         JPanel pnl_text = new JPanel();
         pnl_text.setLayout(new FlowLayout());
         pnl_text.add(scrollPane);
@@ -153,9 +168,49 @@ public class MainPanel extends JFrame {
 		}
 		if (selectedRows == 1) {
 			this.btn_play.setEnabled(true);
+			txt_fileinfo.setText(showFileInfoFor(this.tbl_file.getSelectedRow()));
 		} else {
 			this.btn_play.setEnabled(false);
+			txt_fileinfo.setText("");
 		}
+	}
+	
+	/**
+	 * Generate a string that represents the selected file, for display in a text box
+	 * @param selectedRow the selected row from the file table
+	 * @return the string of file information
+	 */
+	private String showFileInfoFor(int selectedRow) {
+		FFProbeExaminer f = tbl_file.getFFProbeFiles().get(selectedRow);
+		String val = "";
+		try {
+			val = val + "Path: " + f.getFile().getCanonicalPath() + "\n";
+			val = val + "Number of streams: " + f.getStreams().length + "\n";
+			int counter = 0;
+			while (counter < f.getStreams().length) {
+				Stream stream = f.getStreams()[counter];
+				val = val + "\nStream " + (counter+1) + ": \n";
+				if (!stream.codec_type.equals("")) {
+					val = val + "Codec: " + stream.codec_long_name + " (" + stream.codec_type + ")\n";
+				}
+				if (!stream.channels.equals("")) {
+					val = val + "Channels: " + stream.channels + "\n";
+				}
+				if (!stream.sample_rate.equals("")) {
+					val = val + "Sample Rate: " + stream.sample_rate + "\n";
+				}
+				if (!stream.height.equals("")) {
+					val = val + "Height: " + stream.height + "\n";
+				}
+				if (!stream.width.equals("")) {
+					val = val + "Width: " + stream.width + "\n";
+				}
+				counter++;
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+		return val;
 	}
 	
 	/**
