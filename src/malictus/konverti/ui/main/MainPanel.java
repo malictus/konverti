@@ -2,11 +2,11 @@ package malictus.konverti.ui.main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
-
+import java.net.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import malictus.konverti.*;
 import malictus.konverti.examine.FFProbeExaminer;
 import malictus.konverti.examine.Stream;
@@ -23,6 +23,10 @@ public class MainPanel extends JFrame {
     protected JButton btn_cancel;
     private JButton btn_play;
     private JTextArea txt_fileinfo;
+    private JScrollPane scroll_file;
+    private final static String ALT_TEXT_EMPTY = "             Drag and drop files and folders here";
+    private final static String ALT_TEXT_PROCESSING = "             Processing files --- please wait";
+    private JLabel lbl_alt_tbl_text = new JLabel(ALT_TEXT_EMPTY);
     //TODO put these in interface
     private JComboBox<String> comb_preset;
     private JButton btn_convert;
@@ -31,8 +35,7 @@ public class MainPanel extends JFrame {
     private JCheckBox chk_same_folder;
     private JButton btn_target_folder;
     private JTextField txt_target;
-    private JLabel lbl_credits;
-	
+    
 	/*
 	 * Initialize the main window
 	 */
@@ -49,13 +52,36 @@ public class MainPanel extends JFrame {
 	    String[][] data = new String[][]{};
 	    DefaultTableModel model = new DefaultTableModel(data, FileTable.COLUMN_NAMES);
         tbl_file = new FileTable(model, this);
-        JScrollPane scroll = new JScrollPane(tbl_file);
-        contentPanel.add(scroll, BorderLayout.CENTER);  
+        scroll_file = new JScrollPane(tbl_file);
+        Font big_font = new Font(Font.DIALOG, Font.PLAIN, 14);
+        lbl_alt_tbl_text.setFont(big_font);
+        scroll_file.setViewportView(lbl_alt_tbl_text);
+        new FileDrop(scroll_file, new FileDrop.Listener() {   
+	    	public void filesDropped(File[] files ) {   
+	    		tbl_file.handleFileDrop(files);
+            } 
+        });
+        contentPanel.add(scroll_file, BorderLayout.CENTER);  
         //north panel
         JPanel pnl_north = new JPanel();
-        JLabel lbl_drag = new JLabel("Drag and drop files and folders to be processed below.");
-        pnl_north.setLayout(new BorderLayout());
-        pnl_north.add(lbl_drag, BorderLayout.WEST);
+        JLabel lbl_drag = new JLabel("<html><font color = 'blue' ><u>Visit Konverti Website</u></font></center>");
+        lbl_drag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lbl_drag.addMouseListener(new MouseAdapter() {  
+            public void mouseReleased(MouseEvent e) {  
+                if (!e.isPopupTrigger()) {  
+                	Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+                    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                        try {
+                            desktop.browse((new URL("http://www.konverti.org")).toURI());
+                        } catch (Exception err) {
+                            err.printStackTrace();
+                        }
+                    }
+                }  
+            }  
+        });  
+        pnl_north.setLayout(new FlowLayout());
+        pnl_north.add(lbl_drag);
         contentPanel.add(pnl_north, BorderLayout.NORTH);
         //east panel - additional buttons
         JPanel pnl_east = new JPanel();
@@ -139,11 +165,13 @@ public class MainPanel extends JFrame {
 		this.btn_removeAll.setEnabled(false);
 		this.btn_removeSelected.setEnabled(false);
 		this.btn_play.setEnabled(false);
+		lbl_alt_tbl_text.setText(ALT_TEXT_PROCESSING);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
 	protected void turnOnInterface() {
 		tbl_file.setEnabled(true);
+		lbl_alt_tbl_text.setText(ALT_TEXT_EMPTY);
 		updateTheUI(tbl_file.getSelectedRowCount(), tbl_file.getRowCount());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -158,8 +186,10 @@ public class MainPanel extends JFrame {
 	protected void updateTheUI(int selectedRows, int totalRows) {
 		if (totalRows > 0) {
 			this.btn_removeAll.setEnabled(true);
+			scroll_file.setViewportView(this.tbl_file);
 		} else {
 			this.btn_removeAll.setEnabled(false);
+			scroll_file.setViewportView(lbl_alt_tbl_text);
 		}
 		if (selectedRows > 0) {
 			this.btn_removeSelected.setEnabled(true);

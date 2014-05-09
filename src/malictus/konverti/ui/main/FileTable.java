@@ -38,11 +38,6 @@ public class FileTable extends JTable {
 	        	PARENT_PANEL.updateTheUI(getSelectedRowCount(), getRowCount());
 	        }
 	    });
-	    new FileDrop(this, new FileDrop.Listener() {   
-	    	public void filesDropped(File[] files ) {   
-	    		handleFileDrop(files);
-            } 
-        });
 	}
 	
 	/**
@@ -104,10 +99,10 @@ public class FileTable extends JTable {
 	}
 	
 	/**
-	 * Called when files are dropped onto this table.
+	 * Called when files are dropped onto this table or the parent scroll pane
 	 * @param files the array of files that have been dropped onto the table
 	 */
-	private void handleFileDrop(File[] files) {
+	protected void handleFileDrop(File[] files) {
 		if (!this.isEnabled()) {
 			return;
 		}
