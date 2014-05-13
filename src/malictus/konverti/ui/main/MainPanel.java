@@ -27,14 +27,8 @@ public class MainPanel extends JFrame {
     private final static String ALT_TEXT_EMPTY = "             Drag and drop files and folders here";
     private final static String ALT_TEXT_PROCESSING = "             Processing files --- please wait";
     private JLabel lbl_alt_tbl_text = new JLabel(ALT_TEXT_EMPTY);
-    //TODO put these in interface
     private JComboBox<String> comb_preset;
     private JButton btn_convert;
-    private JButton btn_editpresets;
-    private JButton btn_advanced;
-    private JCheckBox chk_same_folder;
-    private JButton btn_target_folder;
-    private JTextField txt_target;
     
 	/*
 	 * Initialize the main window
@@ -83,11 +77,14 @@ public class MainPanel extends JFrame {
         pnl_north.setLayout(new FlowLayout());
         pnl_north.add(lbl_drag);
         contentPanel.add(pnl_north, BorderLayout.NORTH);
-        //east panel - additional buttons
+        //east panel - most functionality goes here
         JPanel pnl_east = new JPanel();
         pnl_east.setLayout(new BorderLayout());
-        JPanel pnl_play_button = new JPanel();
-        pnl_play_button.setLayout(new FlowLayout());
+        //play button and info pane
+        JPanel pnl_text_and_play = new JPanel();
+        pnl_text_and_play.setLayout(new BorderLayout());
+        JPanel pnl_play = new JPanel();
+        pnl_play.setLayout(new FlowLayout());
         btn_play = new JButton("Play");
         btn_play.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -95,17 +92,40 @@ public class MainPanel extends JFrame {
             }
         }); 
         btn_play.setEnabled(false);
-        pnl_play_button.add(btn_play);
-        pnl_east.add(pnl_play_button, BorderLayout.NORTH);
+        pnl_play.add(btn_play);
+        pnl_text_and_play.add(pnl_play, BorderLayout.NORTH);        
         txt_fileinfo = new JTextArea(13, 24);
         txt_fileinfo.setEditable(false);
         Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
         txt_fileinfo.setFont(font);
         JScrollPane scrollPane = new JScrollPane(txt_fileinfo); 
-        JPanel pnl_text = new JPanel();
-        pnl_text.setLayout(new FlowLayout());
-        pnl_text.add(scrollPane);
-        pnl_east.add(pnl_text, BorderLayout.EAST);
+        pnl_text_and_play.add(scrollPane, BorderLayout.CENTER);
+        pnl_east.add(pnl_text_and_play, BorderLayout.NORTH);
+        JPanel pnl_convert = new JPanel();
+        pnl_convert.setLayout(new BoxLayout(pnl_convert, BoxLayout.Y_AXIS));
+        JPanel combobox_panel = new JPanel();
+        combobox_panel.setLayout(new FlowLayout());
+        comb_preset = new JComboBox<String>();
+        comb_preset.addItem("Select a preset:");
+        comb_preset.addItem("WAV File - CD Quality");
+        comb_preset.setAlignmentX(Component.CENTER_ALIGNMENT);
+        comb_preset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                updateTheUI(tbl_file.getSelectedRowCount(), tbl_file.getRowCount());
+            }
+        });
+        combobox_panel.add(comb_preset);
+        pnl_convert.add(combobox_panel);
+        btn_convert = new JButton("Convert All!");
+        btn_convert.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn_convert.setEnabled(false);
+        btn_convert.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                convertFiles();
+            }
+        }); 
+        pnl_convert.add(btn_convert);
+        pnl_east.add(pnl_convert, BorderLayout.CENTER);
         contentPanel.add(pnl_east, BorderLayout.EAST);
         //south panel - status and cancel
         JPanel pnl_south = new JPanel();
@@ -155,8 +175,7 @@ public class MainPanel extends JFrame {
         if (frameSize.width > screenSize.width) {
         	frameSize.width = screenSize.width;
         }
-        this.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-        this.setVisible(true);
+        setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
         setVisible(true);
 	}
 	
@@ -166,6 +185,7 @@ public class MainPanel extends JFrame {
 		this.btn_removeSelected.setEnabled(false);
 		this.btn_play.setEnabled(false);
 		lbl_alt_tbl_text.setText(ALT_TEXT_PROCESSING);
+		this.btn_convert.setEnabled(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
@@ -186,9 +206,15 @@ public class MainPanel extends JFrame {
 	protected void updateTheUI(int selectedRows, int totalRows) {
 		if (totalRows > 0) {
 			this.btn_removeAll.setEnabled(true);
+			if (this.comb_preset.getSelectedIndex() > 0) {
+				this.btn_convert.setEnabled(true);
+			} else {
+				this.btn_convert.setEnabled(false);
+			}
 			scroll_file.setViewportView(this.tbl_file);
 		} else {
 			this.btn_removeAll.setEnabled(false);
+			this.btn_convert.setEnabled(false);
 			scroll_file.setViewportView(lbl_alt_tbl_text);
 		}
 		if (selectedRows > 0) {
@@ -203,6 +229,13 @@ public class MainPanel extends JFrame {
 			this.btn_play.setEnabled(false);
 			txt_fileinfo.setText("");
 		}
+	}
+	
+	/**
+	 * Do the actual file conversion
+	 */
+	private void convertFiles() {
+		new ConversionPanel();
 	}
 	
 	/**
