@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import malictus.konverti.*;
 import malictus.konverti.examine.FFProbeExaminer;
 import malictus.konverti.examine.Stream;
+import malictus.konverti.ui.convert.*;
 
 public class MainPanel extends JFrame {
 	
@@ -235,7 +236,7 @@ public class MainPanel extends JFrame {
 	 * Do the actual file conversion
 	 */
 	private void convertFiles() {
-		new ConversionPanel();
+		new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
 	}
 	
 	/**
