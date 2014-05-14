@@ -5,9 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import java.io.*;
-
 import javax.swing.*;
-
 import malictus.konverti.*;
 import malictus.konverti.examine.*;
 
@@ -19,9 +17,10 @@ public class ConversionPanel extends JDialog {
 	public static final int WIDTH = 500;
 	public static final int HEIGHT = 400;
 	private JPanel contentPanel;
-	private Vector<ConvertFileEntry> filesList;
 	private int conversion_preset;
 	private JLabel lbl_status;
+	private JButton btn_close;
+	private JTextArea txt_cmdline;
     
 	/*
 	 * Initialize the conversion window
@@ -39,7 +38,7 @@ public class ConversionPanel extends JDialog {
         contentPanel.setLayout(new BorderLayout());
         JPanel southPanel = new JPanel();
         southPanel.setLayout(new FlowLayout());
-        JButton btn_close = new JButton("Close");
+        btn_close = new JButton("Close");
         btn_close.setEnabled(false);
         btn_close.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -57,7 +56,7 @@ public class ConversionPanel extends JDialog {
         southPanel.add(btn_stop);
         southPanel.add(btn_close);
         contentPanel.add(southPanel, BorderLayout.SOUTH);
-        JTextArea txt_cmdline = new JTextArea();
+        txt_cmdline = new JTextArea();
         txt_cmdline.setEditable(false);
         Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
         txt_cmdline.setFont(font);
@@ -85,30 +84,53 @@ public class ConversionPanel extends JDialog {
         	frameSize.width = screenSize.width;
         }
         setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-        btn_close.setEnabled(true);
-        //TODO make stuff beyond this a thread and add cancel buton
-        //TODO add file extension on when sending files to ffmpeg based on preset (unless ffmpeg does this anyway)
-        populateFilesList(incomingFilesList);
-        //TODO put this in after starting thread; execution will block here
+        final java.util.List<FFProbeExaminer> incomingFilesListFinal = incomingFilesList;
+        Runnable q = new Runnable() {
+			public void run() {
+				doConvert(incomingFilesListFinal);
+		    }
+		};
+		Thread t = new Thread(q);
+		t.start();
         setVisible(true);
+	}
+	
+	/**
+	 * Handle the actual file conversion process here, in a separate thread
+	 */
+	private void doConvert(java.util.List<FFProbeExaminer> incomingFilesList) {
+		Vector<ConvertFileEntry> filesList = populateFilesList(incomingFilesList);
+		int counter = 0;
+		while (counter < filesList.size()) {
+			lbl_status.setText("Status: Converting File " + (counter+1) + " of " + (filesList.size()));
+			File inFile = filesList.get(counter).getInFile();
+			this.txt_cmdline.append("Processing " + inFile.getAbsolutePath() + "\n");
+			//TODO actual processing
+			counter++;
+		}
+		//finished --- OK to close now
+		btn_close.setEnabled(true);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 	
 	/**
 	 * Interate through the incoming files, and attempt to find appropriate names for new files to use for conversion
 	 * @param incomingFilesList the incoming files from FFProbe
 	 */
-	private void populateFilesList(java.util.List<FFProbeExaminer> incomingFilesList) {
+	private Vector<ConvertFileEntry> populateFilesList(java.util.List<FFProbeExaminer> incomingFilesList) {
+		Vector<ConvertFileEntry> vec_cfe = new Vector<ConvertFileEntry>();
 		int counter = 0;
 		while (counter < incomingFilesList.size()) {
 			try {
 				File inFile = incomingFilesList.get(counter).getFile();
 				ConvertFileEntry cfe = new ConvertFileEntry(inFile);
-				filesList.add(cfe);
+				vec_cfe.add(cfe);
 			} catch (Exception err) {
 				//something weird happened, but no need to abort, just keep going
 			}
 			counter++;
 		}
+		return vec_cfe;
 	}
 	
 	/**
