@@ -21,6 +21,8 @@ public class ConversionPanel extends JDialog {
 	private JLabel lbl_status;
 	private JButton btn_close;
 	private JTextArea txt_cmdline;
+	
+	public static int PRESET_CD = 1;
     
 	/*
 	 * Initialize the conversion window
@@ -119,11 +121,12 @@ public class ConversionPanel extends JDialog {
 	 */
 	private Vector<ConvertFileEntry> populateFilesList(java.util.List<FFProbeExaminer> incomingFilesList) {
 		Vector<ConvertFileEntry> vec_cfe = new Vector<ConvertFileEntry>();
+		String extension = getExtension();
 		int counter = 0;
 		while (counter < incomingFilesList.size()) {
 			try {
 				File inFile = incomingFilesList.get(counter).getFile();
-				ConvertFileEntry cfe = new ConvertFileEntry(inFile);
+				ConvertFileEntry cfe = new ConvertFileEntry(inFile, extension);
 				vec_cfe.add(cfe);
 			} catch (Exception err) {
 				//something weird happened, but no need to abort, just keep going
@@ -138,6 +141,13 @@ public class ConversionPanel extends JDialog {
 	 */
 	private void cancelProcessing() {
 		
+	}
+	
+	private String getExtension() {
+		if (conversion_preset == PRESET_CD) {
+			return "wav";
+		}
+		return "";
 	}
 
 }

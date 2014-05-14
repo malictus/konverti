@@ -12,7 +12,14 @@ public class ConvertFileEntry {
 	private File inFile;
 	private File outFile;
 	
-	public ConvertFileEntry(File inFile) throws IOException {
+	/**
+	 * Create a ConvertFileEntry object.
+	 * 
+	 * @param inFile the input file to be processed
+	 * @param newSuffix a new suffix to be applied to the output file; use empty string if no new suffix is desired
+	 * @throws IOException if file read error occurs
+	 */
+	public ConvertFileEntry(File inFile, String newSuffix) throws IOException {
 		this.inFile = inFile;
 		if (!inFile.isFile() || !inFile.canRead()) {
 			throw new IOException("Input file can't be read");
@@ -22,6 +29,9 @@ public class ConvertFileEntry {
 			try {
 				//strip extension
 				newFileName = newFileName.substring(0, newFileName.lastIndexOf('.'));
+				if ((newSuffix != null) && (newSuffix.length() > 0)) {
+					newFileName = newFileName + "." + newSuffix;
+				}
 			} catch (Exception err) {
 				newFileName = inFile.getName();
 			}
