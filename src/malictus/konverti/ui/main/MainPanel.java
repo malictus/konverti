@@ -149,7 +149,7 @@ public class MainPanel extends JFrame {
         btn_removeSelected.setEnabled(false);
         pnl_south.add(btn_removeAll);
         pnl_south.add(btn_removeSelected);
-        btn_cancel = new JButton("Cancel");
+        btn_cancel = new JButton("Stop");
         btn_cancel.setEnabled(false);
         btn_cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
