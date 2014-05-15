@@ -12,6 +12,11 @@ import malictus.konverti.examine.FFProbeExaminer;
 import malictus.konverti.examine.Stream;
 import malictus.konverti.ui.convert.*;
 
+/**
+ * This class represents the main window for the program.
+ * 
+ * @author Jim Halliday
+ */
 public class MainPanel extends JFrame {
 	
 	public static final int WIDTH = 700;

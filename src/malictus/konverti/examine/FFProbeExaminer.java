@@ -2,11 +2,10 @@ package malictus.konverti.examine;
 
 import java.io.*;
 import java.util.Hashtable;
-import malictus.konverti.ConsoleException;
 import malictus.konverti.KonvertiUtils;
 
 /**
- * This class represents a single file that has been examine by FFprobe, and it encapsulates the data from that command.
+ * This class represents a single file that has been examined by FFprobe, and it encapsulates the data from that command.
  * @author Jim Halliday
  */
 public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
@@ -28,9 +27,8 @@ public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 	 * Initiate on FFProbeExaminer object
 	 * @param theFile the file to examine with FFprobe
 	 * @throws IOException if file error occurs
-	 * @throws ConsoleException if console error occurs
 	 */
-	public FFProbeExaminer(File theFile) throws IOException, ConsoleException {
+	public FFProbeExaminer(File theFile) throws IOException {
 		this.theFile = theFile;
 		//first, check to see if the file is recognized by FFPROBE
 		String command = "-v quiet -show_error";

@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Utility method for Konverti.
+ * Utility methods for Konverti.
  * @author Jim Halliday
  */
 public class KonvertiUtils {
@@ -15,9 +15,8 @@ public class KonvertiUtils {
 	 * @param command command-line options to pass to ffprobe
 	 * @return the text output from running the command
 	 * @throws IOException if file error occurs
-	 * @throws ConsoleException if problem occurs with the command line call
 	 */
-	public static String runFFProbeCommand(String command) throws IOException, ConsoleException {
+	public static String runFFProbeCommand(String command) throws IOException {
 		return KonvertiUtils.runFFProbeCommand(command, null);
 	}
 	
@@ -27,9 +26,8 @@ public class KonvertiUtils {
 	 * @param fileToProcess the file to be processed by FFprobe; or null for command to be run without a file parameter
 	 * @return the text output from running the command
 	 * @throws IOException if file error occurs
-	 * @throws ConsoleException if problem occurs with the command line call
 	 */
-	public static String runFFProbeCommand(String command, File fileToProcess) throws IOException, ConsoleException {
+	public static String runFFProbeCommand(String command, File fileToProcess) throws IOException {
 		command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffprobe\" " + command;
 		if (fileToProcess != null) {
 			command = command + " \"" + fileToProcess.getAbsolutePath() + "\"";

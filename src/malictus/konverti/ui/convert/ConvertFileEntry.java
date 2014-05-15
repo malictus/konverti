@@ -41,6 +41,7 @@ public class ConvertFileEntry {
 			if (counter > 0) {
 				convertedName = convertedName + "-" + counter;
 			}
+			//add suffix back
 			if ((newSuffix != null) && (newSuffix.length() > 0)) {
 				convertedName = convertedName + "." + newSuffix;
 			}

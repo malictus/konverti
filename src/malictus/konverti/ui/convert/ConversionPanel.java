@@ -26,7 +26,7 @@ public class ConversionPanel extends JDialog {
 	private JTextArea txt_cmdline;
 	private JButton btn_stop;
 	private boolean cancel_signal = false;
-	
+	//presets from the preset combox box on the parent window
 	public static int PRESET_CD = 1;
     
 	/*
@@ -138,9 +138,8 @@ public class ConversionPanel extends JDialog {
 	 * @param inFile input file
 	 * @param outFile output file
 	 * @throws IOException if read/write errors occur
-	 * @throws ConsoleException if console errors occur
 	 */
-	private void runFFMpegCommand(File inFile, File outFile) throws IOException, ConsoleException {
+	private void runFFMpegCommand(File inFile, File outFile) throws IOException {
 		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffmpeg\" ";
 		//input file parameter
 		command = command + "-i \"" + inFile.getAbsolutePath() + "\" ";
@@ -148,16 +147,7 @@ public class ConversionPanel extends JDialog {
 		command = command + "-hide_banner ";
 		//dont show lots of text
 		command = command + "-v warning ";
-		if (conversion_preset == PRESET_CD) {
-			//audio only
-			command = command + " -vn ";
-			//44100 sample rate
-			command = command + " -ar 44100 ";
-			//2 channels
-			command = command + " -ac 2 ";
-			//16 bit, signed PCM codec
-			command = command + " -acodec pcm_s16le ";
-		}
+		command = command + addConversionParams();
 		//output file
 		command = command + "\"" + outFile.getAbsolutePath() + "\"";
 		this.txt_cmdline.append("Command: " + command + "\n");
@@ -176,6 +166,25 @@ public class ConversionPanel extends JDialog {
 	    br.close();
 	    isr.close();
 	    is.close();
+	}
+	
+	/**
+	 * Figure out what to append to the command line, based on the selected preset
+	 * @return the command parameters that represent this preset
+	 */
+	private String addConversionParams() {
+		String command = "";
+		if (conversion_preset == PRESET_CD) {
+			//audio only
+			command = command + " -vn ";
+			//44100 sample rate
+			command = command + " -ar 44100 ";
+			//2 channels
+			command = command + " -ac 2 ";
+			//16 bit, signed PCM codec
+			command = command + " -acodec pcm_s16le ";
+		}
+		return command;
 	}
 	
 	/**
@@ -210,6 +219,10 @@ public class ConversionPanel extends JDialog {
 		cancel_signal = true;
 	}
 	
+	/**
+	 * Figure out what extension should go on the end of the file based on the new file type
+	 * @return
+	 */
 	private String getExtension() {
 		if (conversion_preset == PRESET_CD) {
 			return "wav";

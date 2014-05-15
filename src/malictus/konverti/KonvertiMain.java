@@ -12,6 +12,16 @@ import malictus.konverti.ui.main.*;
  */
 public class KonvertiMain {
 	
+	//TODO overall tasks
+	/*
+	 * 1. Have code check for existence of ffmpeg executables in same folder as jar/exe file first
+	 * 2. Create executable for windows
+	 * 3. Create installer for windows, with and without ffmpeg and java JRE, and confirm it works
+	 * 4. Update license, readme, and documentation in source
+	 * 4. Upload various versions to sourceforge
+	 * 5. Website up
+	 */
+	
 	//file folder location for ffmpeg and ffprobe, not including trailing slash
 	//if this is blank, they can be called directly from command line 
 	public static String FFMPEG_BIN_FOLDER = "";
@@ -26,6 +36,10 @@ public class KonvertiMain {
 	//default value for no pref value present
 	private static final String PREFS_NOVALUE = "~Nope~";
 
+	/**
+	 * Main method for program
+	 * @param args not used
+	 */
 	public static void main(String[] args) {
 		//set look and feel
 		try {
@@ -46,6 +60,9 @@ public class KonvertiMain {
         });
 	}
 	
+	/**
+	 * Just initiate the GUI
+	 */
 	private static void createAndShowGUI() {
 		new MainPanel();
     }
