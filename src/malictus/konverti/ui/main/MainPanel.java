@@ -112,9 +112,8 @@ public class MainPanel extends JFrame {
         JPanel combobox_panel = new JPanel();
         combobox_panel.setLayout(new FlowLayout());
         comb_preset = new JComboBox<String>();
-        comb_preset.addItem("Select a preset:");
-        comb_preset.addItem("WAV File for CD Burning");
         comb_preset.setAlignmentX(Component.CENTER_ALIGNMENT);
+        populateComboBox();
         comb_preset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 updateTheUI(tbl_file.getSelectedRowCount(), tbl_file.getRowCount());
@@ -213,7 +212,11 @@ public class MainPanel extends JFrame {
 		if (totalRows > 0) {
 			this.btn_removeAll.setEnabled(true);
 			if (this.comb_preset.getSelectedIndex() > 0) {
-				this.btn_convert.setEnabled(true);
+				if (((String)comb_preset.getSelectedItem()).startsWith("(Missing encoder")) {
+					this.btn_convert.setEnabled(false);
+				} else {
+					this.btn_convert.setEnabled(true);
+				}
 			} else {
 				this.btn_convert.setEnabled(false);
 			}
@@ -235,6 +238,19 @@ public class MainPanel extends JFrame {
 			this.btn_play.setEnabled(false);
 			txt_fileinfo.setText("");
 		}
+	}
+	
+	/**
+	 * Populate the combo box, including disabling any presets that won't work due to missing encoders
+	 */
+	private void populateComboBox() {
+		comb_preset.addItem("Select a preset:");
+		if (KonvertiUtils.encoderIsPreset("pcm_s16le")) {
+			comb_preset.addItem("WAV File for CD Burning");
+		} else {
+			comb_preset.addItem("(Missing encoder) - WAV File for CD Burning");
+		}
+			
 	}
 	
 	/**

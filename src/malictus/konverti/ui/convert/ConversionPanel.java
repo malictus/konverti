@@ -17,7 +17,7 @@ import malictus.konverti.examine.*;
  */
 public class ConversionPanel extends JDialog {
 	
-	public static final int WIDTH = 500;
+	public static final int WIDTH = 550;
 	public static final int HEIGHT = 400;
 	private JPanel contentPanel;
 	private int conversion_preset;
@@ -27,6 +27,7 @@ public class ConversionPanel extends JDialog {
 	private JButton btn_stop;
 	private boolean cancel_signal = false;
 	//presets from the preset combox box on the parent window
+	//TODO add more presets
 	public static int PRESET_CD = 1;
     
 	/*

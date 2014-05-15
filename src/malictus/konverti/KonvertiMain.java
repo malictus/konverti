@@ -3,6 +3,7 @@ package malictus.konverti;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
+import java.util.Vector;
 import java.util.prefs.*;
 import malictus.konverti.ui.main.*;
 
@@ -27,14 +28,16 @@ public class KonvertiMain {
 	public static String FFMPEG_BIN_FOLDER = "";
 	//current version
 	public static float VERSION = 0.01f;
-	//preferences 
-	private static Preferences prefs;
 	//name of preferences node to use for all prefs
 	private static final String PREFS_NAME = "Konverti_Preferences";
 	//holds saved folder location for FFmpeg binary files
 	private static final String PREFS_FFMPEG_FOLDER_LOC = "Konverti_ffMPEG_Folder";
 	//default value for no pref value present
 	private static final String PREFS_NOVALUE = "~Nope~";
+	//list of all available FFmpeg decoders
+	public static Vector<Encoder> encoders;
+	//preferences 
+	private static Preferences prefs;
 
 	/**
 	 * Main method for program
@@ -52,6 +55,8 @@ public class KonvertiMain {
 			JOptionPane.showMessageDialog(null, "Fatal error. FFmpeg executables are missing or invalid", "FFmpeg missing", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
+		//get the full list of supported encoders from ffmpeg
+		encoders = KonvertiUtils.getEncoders();
 		//bring up the window
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

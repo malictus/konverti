@@ -49,6 +49,72 @@ public class KonvertiUtils {
 	}
 	
 	/**
+	 * See if a given encoder string is in the list of available encoders
+	 */
+	public static boolean encoderIsPreset(String shortName) {
+		int counter = 0;
+		while (counter < KonvertiMain.encoders.size()) {
+			Encoder e = KonvertiMain.encoders.get(counter);
+			if (e.getName().equals(shortName)) {
+				return true;
+			}
+			counter++;
+		}
+		return false;
+	}
+	
+	/**
+	 * Get all the available encoders from ffmpeg --- called only at startup
+	 * @return the vector of all the encoder objects
+	 */
+	public static Vector<Encoder> getEncoders() {
+		Vector<Encoder> encoders = new Vector<Encoder>();
+		try {
+			String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffmpeg\" ";
+			//dont show lots of text
+			command = command + "-v warning ";
+			//show encoders
+			command = command + "-encoders";		
+			Process process = Runtime.getRuntime().exec(command);
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		    String line = null;
+	        while ((line = stdInput.readLine()) != null) {
+		    	line = line.trim();
+		    	//process individual lines
+		    	if (line.startsWith("A") || line.startsWith("V") || line.startsWith("S")) {
+		    		if (line.contains(" ")) {
+		    			//check to make sure we aren't reading the first instructions part of the output
+		    			if (!line.substring(line.indexOf(" ") + 1).startsWith("=")) {
+		    				String type = line.substring(0, 1);
+		    				String therest = line.substring(line.indexOf(" ") + 1);
+		    				String name = therest.substring(0, therest.indexOf(" ")).trim();
+		    				String longname = therest.substring(therest.indexOf(name) + name.length()).trim();
+		    				int typeint = -1;
+		    				if (type.equals("S")) {
+		    					typeint = Encoder.TYPE_SUBTITLE;
+		    				} else if (type.equals("A")) {
+		    					typeint = Encoder.TYPE_AUDIO;
+		    				} else if (type.equals("V")) {
+		    					typeint = Encoder.TYPE_VIDEO;
+		    				}
+		    				if (typeint == -1) {
+		    					//unknown?
+		    				} else {
+		    					encoders.add(new Encoder(typeint, name, longname));
+		    				}
+		    			}
+		    		}
+		    	}
+		    }
+		    stdInput.close();
+		} catch (Exception err) {
+			//not much we can do here
+			err.printStackTrace();
+		}
+		return encoders;
+	}
+	
+	/**
 	 * Parse a string, and look for any lines that are in the form 'xxx=yyy' and parse these into key value pairs.
 	 * This mimics the way ffprobe outputs information.
 	 * @param stringToParse the string to parse for values
