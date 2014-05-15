@@ -29,9 +29,6 @@ public class ConvertFileEntry {
 			try {
 				//strip extension
 				newFileName = newFileName.substring(0, newFileName.lastIndexOf('.'));
-				if ((newSuffix != null) && (newSuffix.length() > 0)) {
-					newFileName = newFileName + "." + newSuffix;
-				}
 			} catch (Exception err) {
 				newFileName = inFile.getName();
 			}
@@ -43,6 +40,9 @@ public class ConvertFileEntry {
 			String convertedName = newFileName + "-converted";
 			if (counter > 0) {
 				convertedName = convertedName + "-" + counter;
+			}
+			if ((newSuffix != null) && (newSuffix.length() > 0)) {
+				convertedName = convertedName + "." + newSuffix;
 			}
 			try {
 				testFile = new File(inFile.getParentFile().getCanonicalPath() + File.separator + convertedName);

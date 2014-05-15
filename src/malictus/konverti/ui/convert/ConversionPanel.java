@@ -5,7 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import java.io.*;
+
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+
 import malictus.konverti.*;
 import malictus.konverti.examine.*;
 
@@ -21,6 +24,8 @@ public class ConversionPanel extends JDialog {
 	private JLabel lbl_status;
 	private JButton btn_close;
 	private JTextArea txt_cmdline;
+	private JButton btn_stop;
+	private boolean cancel_signal = false;
 	
 	public static int PRESET_CD = 1;
     
@@ -48,7 +53,7 @@ public class ConversionPanel extends JDialog {
                 dispose();
             }
         }); 
-        JButton btn_stop = new JButton("Stop");
+        btn_stop = new JButton("Stop");
         btn_stop.setEnabled(false);
         btn_stop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -60,6 +65,8 @@ public class ConversionPanel extends JDialog {
         contentPanel.add(southPanel, BorderLayout.SOUTH);
         txt_cmdline = new JTextArea();
         txt_cmdline.setEditable(false);
+        DefaultCaret caret = (DefaultCaret)txt_cmdline.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
         txt_cmdline.setFont(font);
         JScrollPane scrollPane = new JScrollPane(txt_cmdline); 
@@ -101,18 +108,74 @@ public class ConversionPanel extends JDialog {
 	 * Handle the actual file conversion process here, in a separate thread
 	 */
 	private void doConvert(java.util.List<FFProbeExaminer> incomingFilesList) {
+		btn_stop.setEnabled(true);
 		Vector<ConvertFileEntry> filesList = populateFilesList(incomingFilesList);
 		int counter = 0;
 		while (counter < filesList.size()) {
 			lbl_status.setText("Status: Converting File " + (counter+1) + " of " + (filesList.size()));
 			File inFile = filesList.get(counter).getInFile();
-			this.txt_cmdline.append("Processing " + inFile.getAbsolutePath() + "\n");
-			//TODO actual processing
+			this.txt_cmdline.append("\nProcessing " + inFile.getAbsolutePath() + "\n");
+			try {
+				runFFMpegCommand(inFile, filesList.get(counter).getOutFile());
+			} catch (Exception err) {
+				err.printStackTrace();
+			}
+			if (cancel_signal) {
+				return;
+			}
 			counter++;
 		}
 		//finished --- OK to close now
 		btn_close.setEnabled(true);
+		btn_stop.setEnabled(false);
+		lbl_status.setText("Status: Finished converting " + filesList.size() + " files.");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
+	/**
+	 * Run FFmpeg command, based on the selected preset
+	 * 
+	 * @param inFile input file
+	 * @param outFile output file
+	 * @throws IOException if read/write errors occur
+	 * @throws ConsoleException if console errors occur
+	 */
+	private void runFFMpegCommand(File inFile, File outFile) throws IOException, ConsoleException {
+		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffmpeg\" ";
+		//input file parameter
+		command = command + "-i \"" + inFile.getAbsolutePath() + "\" ";
+		//dont show banner every time
+		command = command + "-hide_banner ";
+		//dont show lots of text
+		command = command + "-v warning ";
+		if (conversion_preset == PRESET_CD) {
+			//audio only
+			command = command + " -vn ";
+			//44100 sample rate
+			command = command + " -ar 44100 ";
+			//2 channels
+			command = command + " -ac 2 ";
+			//16 bit, signed PCM codec
+			command = command + " -acodec pcm_s16le ";
+		}
+		//output file
+		command = command + "\"" + outFile.getAbsolutePath() + "\"";
+		this.txt_cmdline.append("Command: " + command + "\n");
+		ProcessBuilder builder = new ProcessBuilder(command);
+	    final Process process = builder.start();
+	    InputStream is = process.getErrorStream();
+	    InputStreamReader isr = new InputStreamReader(is);
+	    BufferedReader br = new BufferedReader(isr);
+	    String line;
+	    while ((line = br.readLine()) != null) {
+	    	txt_cmdline.append(line + "\n");
+	    	if (cancel_signal) {
+	    		return;
+	    	}
+	    }
+	    br.close();
+	    isr.close();
+	    is.close();
 	}
 	
 	/**
@@ -140,7 +203,11 @@ public class ConversionPanel extends JDialog {
 	 * Cancel the current file conversion process so the window can be closed.
 	 */
 	private void cancelProcessing() {
-		
+		btn_close.setEnabled(true);
+		btn_stop.setEnabled(false);
+		lbl_status.setText("Status: Conversion canceled.");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		cancel_signal = true;
 	}
 	
 	private String getExtension() {

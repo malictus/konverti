@@ -108,7 +108,7 @@ public class MainPanel extends JFrame {
         combobox_panel.setLayout(new FlowLayout());
         comb_preset = new JComboBox<String>();
         comb_preset.addItem("Select a preset:");
-        comb_preset.addItem("WAV File - CD Quality");
+        comb_preset.addItem("WAV File for CD Burning");
         comb_preset.setAlignmentX(Component.CENTER_ALIGNMENT);
         comb_preset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
@@ -237,6 +237,7 @@ public class MainPanel extends JFrame {
 	 */
 	private void convertFiles() {
 		new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
+		tbl_file.removeAllFiles();
 	}
 	
 	/**
