@@ -27,8 +27,13 @@ public class ConversionPanel extends JDialog {
 	private JButton btn_stop;
 	private boolean cancel_signal = false;
 	//presets from the preset combox box on the parent window
-	//TODO add more presets
 	public static int PRESET_CD = 1;
+	public static int PRESET_MP3_CBR_HI_320 = 2;
+	public static int PRESET_MP3_CBR_MID_192 = 3;
+	public static int PRESET_MP3_CBR_LO_128 = 4;	
+	public static int PRESET_MP3_VBR_HI_0 = 5;
+	public static int PRESET_MP3_VBR_MID_4 = 6;
+	public static int PRESET_MP3_VBR_LOW_7 = 7;
     
 	/*
 	 * Initialize the conversion window
@@ -184,6 +189,48 @@ public class ConversionPanel extends JDialog {
 			command = command + " -ac 2 ";
 			//16 bit, signed PCM codec
 			command = command + " -acodec pcm_s16le ";
+		} else if (conversion_preset == PRESET_MP3_CBR_HI_320) {
+			//audio only
+			command = command + " -vn ";
+			//mp3 codec
+			command = command + " -acodec libmp3lame ";
+			//bitrate
+			command = command + " -b:a 320k ";
+		} else if (conversion_preset == PRESET_MP3_CBR_MID_192) {
+			//audio only
+			command = command + " -vn ";
+			//mp3 codec
+			command = command + " -acodec libmp3lame ";
+			//bitrate
+			command = command + " -b:a 192k ";
+		} else if (conversion_preset == PRESET_MP3_CBR_LO_128) {
+			//audio only
+			command = command + " -vn ";
+			//mp3 codec
+			command = command + " -acodec libmp3lame ";
+			//bitrate
+			command = command + " -b:a 128k ";
+		} else if (conversion_preset == PRESET_MP3_VBR_HI_0) {
+			//audio only
+			command = command + " -vn ";
+			//mp3 codec
+			command = command + " -acodec libmp3lame ";
+			//bitrate
+			command = command + " -q:a 0 ";
+		} else if (conversion_preset == PRESET_MP3_VBR_MID_4) {
+			//audio only
+			command = command + " -vn ";
+			//mp3 codec
+			command = command + " -acodec libmp3lame ";
+			//bitrate
+			command = command + " -q:a 4 ";
+		} else if (conversion_preset == PRESET_MP3_VBR_LOW_7) {
+			//audio only
+			command = command + " -vn ";
+			//mp3 codec
+			command = command + " -acodec libmp3lame ";
+			//bitrate
+			command = command + " -q:a 7 ";
 		}
 		return command;
 	}
@@ -227,6 +274,11 @@ public class ConversionPanel extends JDialog {
 	private String getExtension() {
 		if (conversion_preset == PRESET_CD) {
 			return "wav";
+		}
+		if ((conversion_preset == PRESET_MP3_CBR_HI_320) || (conversion_preset == PRESET_MP3_CBR_MID_192) ||
+				(conversion_preset == PRESET_MP3_CBR_LO_128) || (conversion_preset == PRESET_MP3_VBR_HI_0) ||
+				(conversion_preset == PRESET_MP3_VBR_MID_4) || (conversion_preset == PRESET_MP3_VBR_LOW_7)) {
+			return "mp3";
 		}
 		return "";
 	}

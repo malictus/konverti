@@ -250,6 +250,21 @@ public class MainPanel extends JFrame {
 		} else {
 			comb_preset.addItem("(Missing encoder) - WAV File for CD Burning");
 		}
+		if (KonvertiUtils.encoderIsPreset("libmp3lame")) {
+			comb_preset.addItem("MP3 CBR - 320K");
+			comb_preset.addItem("MP3 CBR - 192K");
+			comb_preset.addItem("MP3 CBR - 128K");
+			comb_preset.addItem("MP3 VBR - HI");
+			comb_preset.addItem("MP3 VBR - MID");
+			comb_preset.addItem("MP3 VBR - LOW");
+		} else {
+			comb_preset.addItem("(Missing encoder) - MP3 CBR - 320K");
+			comb_preset.addItem("(Missing encoder) - MP3 CBR - 192K");
+			comb_preset.addItem("(Missing encoder) - MP3 CBR - 128K");
+			comb_preset.addItem("(Missing encoder) - MP3 VBR - HI");
+			comb_preset.addItem("(Missing encoder) - MP3 VBR - MID");
+			comb_preset.addItem("(Missing encoder) - MP3 VBR - LOW");
+		}
 			
 	}
 	
