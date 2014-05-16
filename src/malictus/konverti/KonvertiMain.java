@@ -14,13 +14,18 @@ import malictus.konverti.ui.main.*;
 public class KonvertiMain {
 	
 	//TODO overall tasks
-	/*
-	 * 1. Have code check for existence of ffmpeg executables in same folder as jar/exe file first
-	 * 2. Create executable for windows
-	 * 3. Create installer for windows, with and without ffmpeg and java JRE, and confirm it works
-	 * 4. Update license, readme, and documentation in source
-	 * 4. Upload various versions to sourceforge
-	 * 5. Website up
+	/* Add ability to pick where files go when converted
+	 * Don't add 'converted' if file with new extension doesn't already exist
+	 * Add graphics to buttons
+	 * Eventually add ability to choose which ffmpeg to use
+	 * Eventually add ability to add/customize existing presets
+	 * Eventually add ability to add custom command-line agruments
+	 * Have code check for existence of ffmpeg executables in same folder as jar/exe file first
+	 * Create executable for windows
+	 * Create installer for windows, with and without ffmpeg and java JRE, and confirm it works
+	 * Update license, readme, and documentation in source
+	 * Upload various versions to sourceforge
+	 * Website up
 	 */
 	
 	//file folder location for ffmpeg and ffprobe, not including trailing slash
