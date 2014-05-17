@@ -36,6 +36,19 @@ public class ConvertFileEntry {
 		int counter = 0;
 		boolean keepgoing = true;
 		File testFile = null;
+		//first try adding suffix without other changes
+		String newName = newFileName + "." + newSuffix;
+		try {
+			testFile = new File(inFile.getParentFile().getCanonicalPath() + File.separator + newName);
+			if (!testFile.exists()) {
+				outFile = testFile;
+				keepgoing = false;
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+			keepgoing = true;
+		}
+		//keep going until we find a name that's not taken
 		while (keepgoing) {
 			String convertedName = newFileName + "-converted";
 			if (counter > 0) {

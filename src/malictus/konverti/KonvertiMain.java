@@ -15,14 +15,10 @@ public class KonvertiMain {
 	
 	//TODO overall tasks
 	/* Add ability to pick where files go when converted
-	 * Don't add 'converted' if file with new extension doesn't already exist
-	 * Add graphics to buttons
-	 * Eventually add ability to choose which ffmpeg to use
-	 * Eventually add ability to add/customize existing presets
-	 * Eventually add ability to add custom command-line agruments
-	 * Have code check for existence of ffmpeg executables in same folder as jar/exe file first
+	 * Add ability to choose which ffmpeg to use
+     * Flesh out custom button
+	 * Have code check for existence of ffmpeg executables in same folder as jar/exe file first?
 	 * Create executable for windows
-	 * Create installer for windows, with and without ffmpeg and java JRE, and confirm it works
 	 * Update license, readme, and documentation in source
 	 * Upload various versions to sourceforge
 	 * Website up

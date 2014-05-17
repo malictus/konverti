@@ -27,7 +27,7 @@ public class ConversionPanel extends JDialog {
 	private JButton btn_stop;
 	private boolean cancel_signal = false;
 	//presets from the preset combox box on the parent window
-	public static int PRESET_CD = 1;
+	public static int PRESET_WAV_CD = 1;
 	public static int PRESET_MP3_CBR_HI_320 = 2;
 	public static int PRESET_MP3_CBR_MID_192 = 3;
 	public static int PRESET_MP3_CBR_LO_128 = 4;	
@@ -180,7 +180,7 @@ public class ConversionPanel extends JDialog {
 	 */
 	private String addConversionParams() {
 		String command = "";
-		if (conversion_preset == PRESET_CD) {
+		if (conversion_preset == PRESET_WAV_CD) {
 			//audio only
 			command = command + " -vn ";
 			//44100 sample rate
@@ -272,7 +272,7 @@ public class ConversionPanel extends JDialog {
 	 * @return
 	 */
 	private String getExtension() {
-		if (conversion_preset == PRESET_CD) {
+		if (conversion_preset == PRESET_WAV_CD) {
 			return "wav";
 		}
 		if ((conversion_preset == PRESET_MP3_CBR_HI_320) || (conversion_preset == PRESET_MP3_CBR_MID_192) ||

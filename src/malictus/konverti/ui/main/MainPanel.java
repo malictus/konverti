@@ -35,6 +35,7 @@ public class MainPanel extends JFrame {
     private JLabel lbl_alt_tbl_text = new JLabel(ALT_TEXT_EMPTY);
     private JComboBox<String> comb_preset;
     private JButton btn_convert;
+    private JButton btn_custom; 
     
 	/*
 	 * Initialize the main window
@@ -111,6 +112,7 @@ public class MainPanel extends JFrame {
         pnl_convert.setLayout(new BoxLayout(pnl_convert, BoxLayout.Y_AXIS));
         JPanel combobox_panel = new JPanel();
         combobox_panel.setLayout(new FlowLayout());
+        combobox_panel.setMaximumSize(new Dimension(600, 40));
         comb_preset = new JComboBox<String>();
         comb_preset.setAlignmentX(Component.CENTER_ALIGNMENT);
         populateComboBox();
@@ -121,7 +123,7 @@ public class MainPanel extends JFrame {
         });
         combobox_panel.add(comb_preset);
         pnl_convert.add(combobox_panel);
-        btn_convert = new JButton("Convert All!");
+        btn_convert = new JButton("Convert Now!");
         btn_convert.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn_convert.setEnabled(false);
         btn_convert.addActionListener(new ActionListener() {
@@ -130,6 +132,16 @@ public class MainPanel extends JFrame {
             }
         }); 
         pnl_convert.add(btn_convert);
+        btn_custom = new JButton("Custom Convert...");
+        btn_custom.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn_custom.setEnabled(false);
+        btn_custom.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                customConvertFiles();
+            }
+        }); 
+        pnl_convert.add(Box.createRigidArea(new Dimension(0,60)));
+        pnl_convert.add(btn_custom);
         pnl_east.add(pnl_convert, BorderLayout.CENTER);
         contentPanel.add(pnl_east, BorderLayout.EAST);
         //south panel - status and cancel
@@ -220,10 +232,12 @@ public class MainPanel extends JFrame {
 			} else {
 				this.btn_convert.setEnabled(false);
 			}
+			this.btn_custom.setEnabled(true);
 			scroll_file.setViewportView(this.tbl_file);
 		} else {
 			this.btn_removeAll.setEnabled(false);
 			this.btn_convert.setEnabled(false);
+			this.btn_custom.setEnabled(true);
 			scroll_file.setViewportView(lbl_alt_tbl_text);
 		}
 		if (selectedRows > 0) {
@@ -274,6 +288,14 @@ public class MainPanel extends JFrame {
 	private void convertFiles() {
 		new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
 		tbl_file.removeAllFiles();
+	}
+	
+	/**
+	 * Show custom convert dialogs
+	 */
+	private void customConvertFiles() {
+		//TODO do something
+		//new CustomConversionPanel(this, tbl_file.getFFProbeFiles());
 	}
 	
 	/**
