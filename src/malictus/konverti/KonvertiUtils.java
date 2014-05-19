@@ -202,7 +202,7 @@ public class KonvertiUtils {
 	public static boolean filenameIsInBlackList(String theFileName) {
 		theFileName = theFileName.trim().toLowerCase();
 		if (theFileName.endsWith("exe") || theFileName.endsWith("dll") || theFileName.endsWith("txt") || theFileName.endsWith("png")
-				|| theFileName.endsWith("jpg") || theFileName.endsWith("gif") || theFileName.endsWith("ico")) {
+				|| theFileName.endsWith("zip") || theFileName.endsWith("jpg") || theFileName.endsWith("gif") || theFileName.endsWith("ico")) {
 			return true;
 		}
 		return false;
