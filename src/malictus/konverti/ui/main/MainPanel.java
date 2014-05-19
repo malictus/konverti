@@ -5,10 +5,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import malictus.konverti.*;
 import malictus.konverti.examine.FFProbeExaminer;
 import malictus.konverti.examine.Stream;
@@ -38,6 +36,9 @@ public class MainPanel extends JFrame {
     private JComboBox<String> comb_preset;
     private JButton btn_convert;
     private JButton btn_custom; 
+    private JButton btn_Browse_Conv;
+    private JCheckBox chk_loc;
+    private JTextField txt_Browse_Conv;
     
 	/*
 	 * Initialize the main window
@@ -145,18 +146,31 @@ public class MainPanel extends JFrame {
         }); 
         pnl_convert.add(Box.createRigidArea(new Dimension(0, 20)));
         pnl_convert.add(btn_custom);
-        JCheckBox chk_loc = new JCheckBox("Folder for converted files:");
+        chk_loc = new JCheckBox("Folder for converted files:");
+        chk_loc.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (chk_loc.isSelected()) {
+                	btn_Browse_Conv.setEnabled(true);
+                	txt_Browse_Conv.setEnabled(true);
+                } else {
+                	btn_Browse_Conv.setEnabled(false);
+                	txt_Browse_Conv.setEnabled(false);
+                }
+            }
+        }); 
         chk_loc.setSelected(false);
         chk_loc.setAlignmentX(Component.CENTER_ALIGNMENT);
         pnl_convert.add(Box.createRigidArea(new Dimension(0, 125)));
         pnl_convert.add(chk_loc);
         JPanel pnl_Browse_Conv = new JPanel();
         pnl_Browse_Conv.setLayout(new FlowLayout());
-        JTextField txt_Browse_Conv = new JTextField();
+        txt_Browse_Conv = new JTextField();
         txt_Browse_Conv.setEditable(false);
+        txt_Browse_Conv.setEnabled(false);
         txt_Browse_Conv.setPreferredSize(new Dimension(190, 22));
-        JButton btn_Browse_Conv = new JButton("Choose...");
+        btn_Browse_Conv = new JButton("Choose...");
         btn_Browse_Conv.setMargin(new Insets(2,2,2,2));
+        btn_Browse_Conv.setEnabled(false);
         pnl_Browse_Conv.add(txt_Browse_Conv);
         pnl_Browse_Conv.add(btn_Browse_Conv);
         pnl_convert.add(pnl_Browse_Conv);

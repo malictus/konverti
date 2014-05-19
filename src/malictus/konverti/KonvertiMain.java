@@ -14,11 +14,17 @@ import malictus.konverti.ui.main.*;
 public class KonvertiMain {
 	
 	//TODO overall tasks
-	/* Better instructions if FFMPEG not found, esp. for windows users
-	 * Add ability to pick where files go when converted (FINISH THIS)
+	
+	/* Add ability to pick where files go when converted (FINISH THIS, including defaulting to documents directory)
+	 * 
+	 * Better instructions if FFMPEG not found, esp. for windows users
 	 * Add ability to choose which ffmpeg to use
-     * Flesh out custom button
 	 * Have code check for existence of ffmpeg executables in same folder as jar/exe file first?
+	 * 
+     * Flesh out custom button
+     * 
+     * When more file types and codecs are added consolidate and refactor code around them
+	 * 
 	 * Create executable for windows
 	 * Update license, readme, and documentation in source
 	 * Upload various versions to sourceforge
