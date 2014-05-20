@@ -5,8 +5,10 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
 import malictus.konverti.*;
 import malictus.konverti.examine.FFProbeExaminer;
 import malictus.konverti.examine.Stream;
@@ -39,12 +41,17 @@ public class MainPanel extends JFrame {
     private JButton btn_Browse_Conv;
     private JCheckBox chk_loc;
     private JTextField txt_Browse_Conv;
+    private File convert_folder;
+    private JFileChooser jfc_customdir;
     
 	/*
 	 * Initialize the main window
 	 */
 	public MainPanel() {
 		super();
+		jfc_customdir = new JFileChooser();
+		jfc_customdir.setMultiSelectionEnabled(false);
+		jfc_customdir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		setTitle("Konverti " + KonvertiMain.VERSION);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         contentPanel = new JPanel();        
@@ -168,9 +175,16 @@ public class MainPanel extends JFrame {
         txt_Browse_Conv.setEditable(false);
         txt_Browse_Conv.setEnabled(false);
         txt_Browse_Conv.setPreferredSize(new Dimension(190, 22));
+        this.convert_folder = new File(System.getProperty("user.home"));
+        txt_Browse_Conv.setText(convert_folder.getAbsolutePath());
         btn_Browse_Conv = new JButton("Choose...");
         btn_Browse_Conv.setMargin(new Insets(2,2,2,2));
         btn_Browse_Conv.setEnabled(false);
+        btn_Browse_Conv.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setCustomDir();
+            }
+        }); 
         pnl_Browse_Conv.add(txt_Browse_Conv);
         pnl_Browse_Conv.add(btn_Browse_Conv);
         pnl_convert.add(pnl_Browse_Conv);
@@ -287,6 +301,22 @@ public class MainPanel extends JFrame {
 	}
 	
 	/**
+	 * Set a custom directory for files to go to
+	 */
+	private void setCustomDir() {
+		int response = jfc_customdir.showOpenDialog(null);
+		if (response == JFileChooser.CANCEL_OPTION) {
+			return;
+		}
+		File x = jfc_customdir.getSelectedFile();
+		if (!x.exists() || !x.isDirectory()) {
+			return;
+		}
+		this.convert_folder = x;
+		this.txt_Browse_Conv.setText(x.getAbsolutePath());
+	}
+	
+	/**
 	 * Populate the combo box, including disabling any presets that won't work due to missing encoders
 	 */
 	private void populateComboBox() {
@@ -318,8 +348,12 @@ public class MainPanel extends JFrame {
 	 * Do the actual file conversion
 	 */
 	private void convertFiles() {
-		new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
-		tbl_file.removeAllFiles();
+		if (this.chk_loc.isSelected()) {
+			new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex(), this.convert_folder);
+		} else {
+			new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
+		}
+ 		tbl_file.removeAllFiles();
 	}
 	
 	/**

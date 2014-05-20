@@ -17,9 +17,10 @@ public class ConvertFileEntry {
 	 * 
 	 * @param inFile the input file to be processed
 	 * @param newSuffix a new suffix to be applied to the output file; use empty string if no new suffix is desired
+	 * @param target_folder the target folder to write to, or null to write to the same folder as the original file
 	 * @throws IOException if file read error occurs
 	 */
-	public ConvertFileEntry(File inFile, String newSuffix) throws IOException {
+	public ConvertFileEntry(File inFile, String newSuffix, File target_folder) throws IOException {
 		this.inFile = inFile;
 		if (!inFile.isFile() || !inFile.canRead()) {
 			throw new IOException("Input file can't be read");
@@ -39,7 +40,11 @@ public class ConvertFileEntry {
 		//first try adding suffix without other changes
 		String newName = newFileName + "." + newSuffix;
 		try {
-			testFile = new File(inFile.getParentFile().getCanonicalPath() + File.separator + newName);
+			if (target_folder == null) {
+				testFile = new File(inFile.getParentFile().getCanonicalPath() + File.separator + newName);
+			} else {
+				testFile = new File(target_folder.getCanonicalPath() + File.separator + newName);
+			}
 			if (!testFile.exists()) {
 				outFile = testFile;
 				keepgoing = false;
@@ -59,7 +64,11 @@ public class ConvertFileEntry {
 				convertedName = convertedName + "." + newSuffix;
 			}
 			try {
-				testFile = new File(inFile.getParentFile().getCanonicalPath() + File.separator + convertedName);
+				if (target_folder == null) {
+					testFile = new File(inFile.getParentFile().getCanonicalPath() + File.separator + convertedName);
+				} else {
+					testFile = new File(target_folder.getCanonicalPath() + File.separator + convertedName);
+				}
 				if (!testFile.exists()) {
 					outFile = testFile;
 					keepgoing = false;

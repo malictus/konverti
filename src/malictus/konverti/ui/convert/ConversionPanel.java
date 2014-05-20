@@ -26,6 +26,7 @@ public class ConversionPanel extends JDialog {
 	private JTextArea txt_cmdline;
 	private JButton btn_stop;
 	private boolean cancel_signal = false;
+	private File target_folder = null;
 	//presets from the preset combox box on the parent window
 	public static int PRESET_WAV_CD = 1;
 	public static int PRESET_MP3_CBR_HI_320 = 2;
@@ -36,10 +37,19 @@ public class ConversionPanel extends JDialog {
 	public static int PRESET_MP3_VBR_LOW_7 = 7;
     
 	/*
-	 * Initialize the conversion window
+	 * Initialize the conversion window without a target specified
 	 */
 	public ConversionPanel(java.util.List<FFProbeExaminer> incomingFilesList, int conversion_preset) {
+		new ConversionPanel(incomingFilesList, conversion_preset, null);
+	}
+	
+	/*
+	 * Initialize the conversion window with a target specified
+	 */
+	
+	public ConversionPanel(java.util.List<FFProbeExaminer> incomingFilesList, int conversion_preset, File target_folder) {
 		super();
+		this.target_folder = target_folder;
 		this.conversion_preset = conversion_preset;
 		setTitle("Konverti " + KonvertiMain.VERSION + " -- File Conversion");
 		this.setModal(true);
@@ -246,7 +256,7 @@ public class ConversionPanel extends JDialog {
 		while (counter < incomingFilesList.size()) {
 			try {
 				File inFile = incomingFilesList.get(counter).getFile();
-				ConvertFileEntry cfe = new ConvertFileEntry(inFile, extension);
+				ConvertFileEntry cfe = new ConvertFileEntry(inFile, extension, target_folder);
 				vec_cfe.add(cfe);
 			} catch (Exception err) {
 				//something weird happened, but no need to abort, just keep going
