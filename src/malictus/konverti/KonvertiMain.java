@@ -16,18 +16,30 @@ public class KonvertiMain {
 	//TODO overall tasks
 	
 	/* 
-	 * Better instructions if FFMPEG not found, esp. for windows users
-	 * Add ability to choose which ffmpeg to use
-	 * Have code check for existence of ffmpeg executables in same folder as jar/exe file first?
+	 * Add ability to choose which ffmpeg to use (finish) when button pushed, including 
+	 * 	1. checking in same directory as exe first
+	 *  2. checking command line next, and 
+	 *  3. having user pick one 
+	 *  
+	 * Better handling of finding FFMPEG at startup
+	 * 	1. check system pref
+	 *  2. check same directory as exe
+	 *  3. check command line
+	 *  4. ask user whether they have it. If not, link to locations incl zeranoe.
+	 *   	If they do have it, have them find it.
 	 * 
-     * Flesh out custom button
+	 * CODE CLEANUP
+	 * 
+     * FACTOR OUT PARAM STUFF
      * 
-     * When more file types and codecs are added consolidate and refactor code around them
+     * Flesh out custom button for wav/aiff/mp3, incl refactor as I can
 	 * 
 	 * Create executable for windows
 	 * Update license, readme, and documentation in source
 	 * Upload various versions to sourceforge
 	 * Website up
+	 * 
+	 * Add more stuff
 	 */
 	
 	//file folder location for ffmpeg and ffprobe, not including trailing slash

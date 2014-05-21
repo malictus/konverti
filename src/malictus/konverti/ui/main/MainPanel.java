@@ -151,9 +151,10 @@ public class MainPanel extends JFrame {
                 customConvertFiles();
             }
         }); 
-        pnl_convert.add(Box.createRigidArea(new Dimension(0, 20)));
+        pnl_convert.add(Box.createRigidArea(new Dimension(0, 16)));
         pnl_convert.add(btn_custom);
-        chk_loc = new JCheckBox("Folder for converted files:");
+        //TODO - add FFMPG location label, textfield, and button here
+        chk_loc = new JCheckBox("Use this folder for all converted files:");
         chk_loc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (chk_loc.isSelected()) {
@@ -247,6 +248,7 @@ public class MainPanel extends JFrame {
 		this.btn_removeAll.setEnabled(false);
 		this.btn_removeSelected.setEnabled(false);
 		this.btn_play.setEnabled(false);
+		this.btn_custom.setEnabled(false);
 		lbl_alt_tbl_text.setText(ALT_TEXT_PROCESSING);
 		this.btn_convert.setEnabled(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
