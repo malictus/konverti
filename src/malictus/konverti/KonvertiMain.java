@@ -17,10 +17,12 @@ public class KonvertiMain {
 	//TODO overall tasks
 	
 	/* 
+	 * ADD A NEW PREFERENCE FOR CURRENT LOCATION THAT FILES GO (AND WHETHER TO SELECT IT OR NOT)
+	 * 
      * CREATE 'PRESET' CLASS and put in it:
      *       - from MainPanel, logic in populateComboBox including missing encoders thing
      *       - from ConversionPanel, preset constants
-     *       - from ConversionPanel, addConversionParams()
+     *       - from ConversionPanel, addConversionParams() and runFFMpegCommand
      *       - from ConversionPanel, getExtension()
      *       have program initialize a vector of 'presets' at startup, and just read from those to do stuff
      * 

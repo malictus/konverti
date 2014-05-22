@@ -401,7 +401,6 @@ public class MainPanel extends JFrame {
 		} else {
 			new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
 		}
- 		tbl_file.removeAllFiles();
 	}
 	
 	/**

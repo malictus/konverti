@@ -126,7 +126,7 @@ public class ConversionPanel extends JDialog {
 		};
 		Thread t = new Thread(q);
 		t.start();
-		//show windw (block until window closes)
+		//show window (block until window closes)
         setVisible(true);
 	}
 	
@@ -153,6 +153,7 @@ public class ConversionPanel extends JDialog {
 			counter++;
 		}
 		//finished --- OK to close now
+		this.txt_cmdline.append("\nFinished Processing");
 		btn_close.setEnabled(true);
 		btn_stop.setEnabled(false);
 		lbl_status.setText("Status: Finished converting " + filesList.size() + " files.");
@@ -167,14 +168,9 @@ public class ConversionPanel extends JDialog {
 	 * @throws IOException if read/write errors occur
 	 */
 	private void runFFMpegCommand(File inFile, File outFile) throws IOException {
-		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg\" ";
-		//input file parameter
-		command = command + "-i \"" + inFile.getAbsolutePath() + "\" ";
-		//dont show banner every time
-		command = command + "-hide_banner ";
-		//dont show lots of text
-		command = command + "-v warning ";
-		command = command + addConversionParams();
+		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath());
+		theCommand = addConversionParams(theCommand);
+		String command = theCommand.getCommand();
 		//output file
 		command = command + "\"" + outFile.getAbsolutePath() + "\"";
 		this.txt_cmdline.append("Command: " + command + "\n");
@@ -197,61 +193,39 @@ public class ConversionPanel extends JDialog {
 	
 	/**
 	 * Figure out what to append to the command line, based on the selected preset
-	 * @return the command parameters that represent this preset
+	 * @return the FFmpegCommand with appropriate parameters appended
+	 * @param command the FFmpegCommand that we start with
 	 */
-	private String addConversionParams() {
-		String command = "";
+	private FFmpegCommand addConversionParams(FFmpegCommand command) {
 		if (conversion_preset == PRESET_WAV_CD) {
-			//audio only
-			command = command + " -vn ";
-			//44100 sample rate
-			command = command + " -ar 44100 ";
-			//2 channels
-			command = command + " -ac 2 ";
-			//16 bit, signed PCM codec
-			command = command + " -acodec pcm_s16le ";
+			command.setAudioOnly(true);
+			command.setAudioSampleRate(44100);
+			command.setAudioChannels(2);
+			command.setAudioEncodingCodec("pcm_s16le");
 		} else if (conversion_preset == PRESET_MP3_CBR_HI_320) {
-			//audio only
-			command = command + " -vn ";
-			//mp3 codec
-			command = command + " -acodec libmp3lame ";
-			//bitrate
-			command = command + " -b:a 320k ";
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioBitRate("320k");
 		} else if (conversion_preset == PRESET_MP3_CBR_MID_192) {
-			//audio only
-			command = command + " -vn ";
-			//mp3 codec
-			command = command + " -acodec libmp3lame ";
-			//bitrate
-			command = command + " -b:a 192k ";
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioBitRate("192k");
 		} else if (conversion_preset == PRESET_MP3_CBR_LO_128) {
-			//audio only
-			command = command + " -vn ";
-			//mp3 codec
-			command = command + " -acodec libmp3lame ";
-			//bitrate
-			command = command + " -b:a 128k ";
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioBitRate("128k");
 		} else if (conversion_preset == PRESET_MP3_VBR_HI_0) {
-			//audio only
-			command = command + " -vn ";
-			//mp3 codec
-			command = command + " -acodec libmp3lame ";
-			//bitrate
-			command = command + " -q:a 0 ";
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioQuality(0);
 		} else if (conversion_preset == PRESET_MP3_VBR_MID_4) {
-			//audio only
-			command = command + " -vn ";
-			//mp3 codec
-			command = command + " -acodec libmp3lame ";
-			//bitrate
-			command = command + " -q:a 4 ";
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioQuality(4);
 		} else if (conversion_preset == PRESET_MP3_VBR_LOW_7) {
-			//audio only
-			command = command + " -vn ";
-			//mp3 codec
-			command = command + " -acodec libmp3lame ";
-			//bitrate
-			command = command + " -q:a 7 ";
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioQuality(7);
 		}
 		return command;
 	}
