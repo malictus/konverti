@@ -4,8 +4,8 @@ import java.io.*;
 
 /**
  * This class represents a file pair --- a file to be converted, and the corresponding file that represents the converted version of the file.
- * Checks are put into place to ensure the new file doesn't already exist. This class does not add a suffix to outgoing to file names: that
- * will be handled later in the pipeline. This class also does not actually create the new file; it just sets it up so that FFmpeg can create it.
+ * Checks are put into place to ensure the new file doesn't already exist. This class also does not actually create the new file; 
+ * it just sets it up so that FFmpeg can create it.
  */
 public class ConvertFileEntry {
 	

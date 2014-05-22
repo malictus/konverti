@@ -43,6 +43,8 @@ public class MainPanel extends JFrame {
     private JTextField txt_Browse_Conv;
     private File convert_folder;
     private JFileChooser jfc_customdir;
+    private JButton btn_ffChoose;
+    private JTextField txt_ffChoose;
     
 	/*
 	 * Initialize the main window
@@ -153,7 +155,28 @@ public class MainPanel extends JFrame {
         }); 
         pnl_convert.add(Box.createRigidArea(new Dimension(0, 16)));
         pnl_convert.add(btn_custom);
-        //TODO - add FFMPG location label, textfield, and button here
+        JLabel lbl_ffChoose = new JLabel("FFmpeg location");
+        lbl_ffChoose.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pnl_convert.add(Box.createRigidArea(new Dimension(0, 70)));
+        pnl_convert.add(lbl_ffChoose);
+        JPanel pnl_ffChoose = new JPanel();
+        pnl_ffChoose.setLayout(new FlowLayout());
+        txt_ffChoose = new JTextField();
+        txt_ffChoose.setEditable(false);
+        txt_ffChoose.setPreferredSize(new Dimension(190, 22));
+        reset_ffChoose_Textbox();
+        btn_ffChoose = new JButton("Choose...");
+        btn_ffChoose.setMargin(new Insets(2,2,2,2));
+        btn_ffChoose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if (KonvertiMain.setFFmpegdir()) {
+            		reset_ffChoose_Textbox();
+            	}
+            }
+        }); 
+        pnl_ffChoose.add(txt_ffChoose);
+        pnl_ffChoose.add(btn_ffChoose);
+        pnl_convert.add(pnl_ffChoose);
         chk_loc = new JCheckBox("Use this folder for all converted files:");
         chk_loc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -168,7 +191,7 @@ public class MainPanel extends JFrame {
         }); 
         chk_loc.setSelected(false);
         chk_loc.setAlignmentX(Component.CENTER_ALIGNMENT);
-        pnl_convert.add(Box.createRigidArea(new Dimension(0, 125)));
+        pnl_convert.add(Box.createRigidArea(new Dimension(0, 4)));
         pnl_convert.add(chk_loc);
         JPanel pnl_Browse_Conv = new JPanel();
         pnl_Browse_Conv.setLayout(new FlowLayout());
@@ -243,24 +266,36 @@ public class MainPanel extends JFrame {
         setVisible(true);
 	}
 	
+	/**
+	 * Thread is running, so disable components that would disrupt that.
+	 */
 	protected void turnOffInterface() {
 		tbl_file.setEnabled(false);
 		this.btn_removeAll.setEnabled(false);
 		this.btn_removeSelected.setEnabled(false);
 		this.btn_play.setEnabled(false);
 		this.btn_custom.setEnabled(false);
+		this.btn_ffChoose.setEnabled(false);
 		lbl_alt_tbl_text.setText(ALT_TEXT_PROCESSING);
 		this.btn_convert.setEnabled(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
+	/**
+	 * When a thread finishes, call this to turns things back on that can't be on while thread is running
+	 */
 	protected void turnOnInterface() {
 		tbl_file.setEnabled(true);
 		lbl_alt_tbl_text.setText(ALT_TEXT_EMPTY);
+		btn_ffChoose.setEnabled(true);
 		updateTheUI(tbl_file.getSelectedRowCount(), tbl_file.getRowCount());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	/**
+	 * Set the window status bar text
+	 * @param status the new text
+	 */
 	protected void setStatus(String status) {
 		this.lbl_status.setText("Status: " + status);
 	}
@@ -316,6 +351,17 @@ public class MainPanel extends JFrame {
 		}
 		this.convert_folder = x;
 		this.txt_Browse_Conv.setText(x.getAbsolutePath());
+	}
+	
+	/**
+	 * Reset the textbox that shows FFmpeg location
+	 */
+	private void reset_ffChoose_Textbox() {
+		String x = KonvertiMain.FFMPEG_BIN_FOLDER;
+    	if (x.equals("")) {
+    		x = "(Raw Command Line)";
+    	}
+    	txt_ffChoose.setText(x);
 	}
 	
 	/**

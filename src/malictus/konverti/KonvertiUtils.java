@@ -28,7 +28,7 @@ public class KonvertiUtils {
 	 * @throws IOException if file error occurs
 	 */
 	public static String runFFProbeCommand(String command, File fileToProcess) throws IOException {
-		command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffprobe\" " + command;
+		command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffprobe\" " + command;
 		if (fileToProcess != null) {
 			command = command + " \"" + fileToProcess.getAbsolutePath() + "\"";
 		}
@@ -70,7 +70,7 @@ public class KonvertiUtils {
 	public static Vector<Encoder> getEncoders() {
 		Vector<Encoder> encoders = new Vector<Encoder>();
 		try {
-			String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffmpeg\" ";
+			String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg\" ";
 			//dont show lots of text
 			command = command + "-v warning ";
 			//show encoders

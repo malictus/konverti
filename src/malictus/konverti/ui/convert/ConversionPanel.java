@@ -13,51 +13,59 @@ import malictus.konverti.*;
 import malictus.konverti.examine.*;
 
 /**
- * This is the window that appears when the actual file conversion is taking place.
+ * This is the dialog that appears while the actual file conversion is taking place.
  */
 public class ConversionPanel extends JDialog {
 	
+	//UI Components
 	public static final int WIDTH = 550;
 	public static final int HEIGHT = 400;
 	private JPanel contentPanel;
-	private int conversion_preset;
 	private JLabel lbl_status;
 	private JButton btn_close;
 	private JTextArea txt_cmdline;
 	private JButton btn_stop;
+	//thread control
 	private boolean cancel_signal = false;
+	//the folder that new files should go into, or null if new files should go to the same directory as the originals
 	private File target_folder = null;
-	//presets from the preset combox box on the parent window
-	public static int PRESET_WAV_CD = 1;
-	public static int PRESET_MP3_CBR_HI_320 = 2;
-	public static int PRESET_MP3_CBR_MID_192 = 3;
-	public static int PRESET_MP3_CBR_LO_128 = 4;	
-	public static int PRESET_MP3_VBR_HI_0 = 5;
-	public static int PRESET_MP3_VBR_MID_4 = 6;
-	public static int PRESET_MP3_VBR_LOW_7 = 7;
-    
-	/*
+	//which conversion preset to use when running FFmpeg; will be one of the PRESET_ static values
+	private int conversion_preset;
+	//presets, which should match the preset combox box on the parent window
+	public static final int PRESET_WAV_CD = 1;
+	public static final int PRESET_MP3_CBR_HI_320 = 2;
+	public static final int PRESET_MP3_CBR_MID_192 = 3;
+	public static final int PRESET_MP3_CBR_LO_128 = 4;	
+	public static final int PRESET_MP3_VBR_HI_0 = 5;
+	public static final int PRESET_MP3_VBR_MID_4 = 6;
+	public static final int PRESET_MP3_VBR_LOW_7 = 7;
+	
+	/**
 	 * Initialize the conversion window without a target specified
+	 * @param incomingFilesList list of files to process
+	 * @param conversion_preset which preset to use for conversion
 	 */
 	public ConversionPanel(java.util.List<FFProbeExaminer> incomingFilesList, int conversion_preset) {
 		new ConversionPanel(incomingFilesList, conversion_preset, null);
 	}
 	
-	/*
+	/**
 	 * Initialize the conversion window with a target specified
+	 * @param incomingFilesList list of files to process
+	 * @param conversion_preset which preset to use for conversion
+	 * @param target_folder the target folder where converted files should go, or null if files should go into original folder
 	 */
-	
 	public ConversionPanel(java.util.List<FFProbeExaminer> incomingFilesList, int conversion_preset, File target_folder) {
 		super();
 		this.target_folder = target_folder;
 		this.conversion_preset = conversion_preset;
+		/*********************************/
+        /** set up components on screen **/
+        /*********************************/
 		setTitle("Konverti " + KonvertiMain.VERSION + " -- File Conversion");
 		this.setModal(true);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         contentPanel = new JPanel();        
-        /*********************************/
-        /** set up components on screen **/
-        /*********************************/
         contentPanel.setLayout(new BorderLayout());
         JPanel southPanel = new JPanel();
         southPanel.setLayout(new FlowLayout());
@@ -109,6 +117,7 @@ public class ConversionPanel extends JDialog {
         	frameSize.width = screenSize.width;
         }
         setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+        //set up processing thread
         final java.util.List<FFProbeExaminer> incomingFilesListFinal = incomingFilesList;
         Runnable q = new Runnable() {
 			public void run() {
@@ -117,11 +126,13 @@ public class ConversionPanel extends JDialog {
 		};
 		Thread t = new Thread(q);
 		t.start();
+		//show windw (block until window closes)
         setVisible(true);
 	}
 	
 	/**
-	 * Handle the actual file conversion process here, in a separate thread
+	 * This method handles the actual file conversion process, in a separate thread
+	 * @param incomingFilesList the files to process
 	 */
 	private void doConvert(java.util.List<FFProbeExaminer> incomingFilesList) {
 		btn_stop.setEnabled(true);
@@ -149,14 +160,14 @@ public class ConversionPanel extends JDialog {
 	}
 	
 	/**
-	 * Run FFmpeg command, based on the selected preset
+	 * Run the FFmpeg command, based on the selected preset
 	 * 
 	 * @param inFile input file
 	 * @param outFile output file
 	 * @throws IOException if read/write errors occur
 	 */
 	private void runFFMpegCommand(File inFile, File outFile) throws IOException {
-		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + File.separator + "ffmpeg\" ";
+		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg\" ";
 		//input file parameter
 		command = command + "-i \"" + inFile.getAbsolutePath() + "\" ";
 		//dont show banner every time
@@ -246,7 +257,7 @@ public class ConversionPanel extends JDialog {
 	}
 	
 	/**
-	 * Interate through the incoming files, and attempt to find appropriate names for new files to use for conversion
+	 * Iterate through the incoming files, and attempt to find appropriate names for new files to use for conversion
 	 * @param incomingFilesList the incoming files from FFProbe
 	 */
 	private Vector<ConvertFileEntry> populateFilesList(java.util.List<FFProbeExaminer> incomingFilesList) {

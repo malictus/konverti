@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.swing.*;
 import java.util.Vector;
 import java.util.prefs.*;
+
 import malictus.konverti.ui.main.*;
 
 /**
@@ -16,21 +17,12 @@ public class KonvertiMain {
 	//TODO overall tasks
 	
 	/* 
-	 * Add ability to choose which ffmpeg to use (finish) when button pushed, including 
-	 * 	1. checking in same directory as exe first
-	 *  2. checking command line next, and 
-	 *  3. having user pick one 
-	 *  
-	 * Better handling of finding FFMPEG at startup
-	 * 	1. check system pref
-	 *  2. check same directory as exe
-	 *  3. check command line
-	 *  4. ask user whether they have it. If not, link to locations incl zeranoe.
-	 *   	If they do have it, have them find it.
-	 * 
-	 * CODE CLEANUP
-	 * 
-     * FACTOR OUT PARAM STUFF
+     * CREATE 'PRESET' CLASS and put in it:
+     *       - from MainPanel, logic in populateComboBox including missing encoders thing
+     *       - from ConversionPanel, preset constants
+     *       - from ConversionPanel, addConversionParams()
+     *       - from ConversionPanel, getExtension()
+     *       have program initialize a vector of 'presets' at startup, and just read from those to do stuff
      * 
      * Flesh out custom button for wav/aiff/mp3, incl refactor as I can
 	 * 
@@ -42,18 +34,18 @@ public class KonvertiMain {
 	 * Add more stuff
 	 */
 	
-	//file folder location for ffmpeg and ffprobe, not including trailing slash
-	//if this is blank, they can be called directly from command line 
+	//file folder location (plus trailing file separator) for ffmpeg and ffprobe, not including trailing slash
+	//if this String is blank, they can be called directly from command line 
 	public static String FFMPEG_BIN_FOLDER = "";
 	//current version
-	public static float VERSION = 0.01f;
+	public static float VERSION = 0.02f;
 	//name of preferences node to use for all prefs
 	private static final String PREFS_NAME = "Konverti_Preferences";
 	//holds saved folder location for FFmpeg binary files
 	private static final String PREFS_FFMPEG_FOLDER_LOC = "Konverti_ffMPEG_Folder";
 	//default value for no pref value present
 	private static final String PREFS_NOVALUE = "~Nope~";
-	//list of all available FFmpeg decoders
+	//list of all available FFmpeg encoders
 	public static Vector<Encoder> encoders;
 	//preferences 
 	private static Preferences prefs;
@@ -69,19 +61,77 @@ public class KonvertiMain {
 		} catch (Exception err) {
 			JOptionPane.showMessageDialog(null, "Error setting look and feel.");
 		}
+		//local FFmpeg libraries
 		if (!initFFmpeg()) {
 			//couldn't find libraries ---- exit
-			JOptionPane.showMessageDialog(null, "Fatal error. FFmpeg executables are missing or invalid", "FFmpeg missing", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
 		//get the full list of supported encoders from ffmpeg
 		encoders = KonvertiUtils.getEncoders();
-		//bring up the window
+		//bring up the main window
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                KonvertiMain.createAndShowGUI();
             }
         });
+	}
+	
+	/**
+	 * Attempt to reset the FFmpeg directory, called at any time once the program has already started
+	 * @return true if this results in actually changing the existing value
+	 */
+	public static boolean setFFmpegdir() {
+		if (testFFmpeg()) {
+			//raw command-line works, so ask user if they want to use that
+			int reply = JOptionPane.showConfirmDialog(null, "Your computer is configured properly to run FFmpeg "
+					+ "from the command line.\nWould you like to use that version of FFmpeg for Konverti?", "Use command"
+					+ " line version?", JOptionPane.YES_NO_OPTION);
+	        if (reply == JOptionPane.YES_OPTION) {
+	        	FFMPEG_BIN_FOLDER = "";
+				//set preference for next time
+				prefs.put(PREFS_FFMPEG_FOLDER_LOC, "");
+				return true;
+	        }	
+		}
+		return KonvertiMain.letUserPick();
+	}
+	
+	/**
+	 * Let the user pick a folder that contains FFmpeg. 
+	 * This will update the preferences file as well. Will also display error dialog if the wrong folder is selected.
+	 * @return if a folder was successfully chosen
+	 */
+	private static boolean letUserPick() {
+		//let user pick new location
+        JFileChooser fc_findlibs = new JFileChooser();
+		fc_findlibs.setMultiSelectionEnabled(false);
+		fc_findlibs.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int response = fc_findlibs.showOpenDialog(null);
+		if (response == JFileChooser.CANCEL_OPTION) {
+			return false;
+		}
+		File x = fc_findlibs.getSelectedFile();
+		if (x.exists() && x.isDirectory()) {
+			if (testFFmpeg(x.getAbsolutePath())) {
+				FFMPEG_BIN_FOLDER = x.getAbsolutePath() + File.separator;
+				//set preference for next time
+				prefs.put(PREFS_FFMPEG_FOLDER_LOC, x.getAbsolutePath());
+				return true;
+			}
+		}
+		//user may have tried to select FFmpeg folder directly, try accessing 'bin' folder inside it
+		File xx = new File(x.getAbsolutePath() + File.separator + "bin");
+		if (xx.exists() && xx.isDirectory()) {
+			if (testFFmpeg(xx.getAbsolutePath())) {
+				FFMPEG_BIN_FOLDER = xx.getAbsolutePath() + File.separator;
+				//set preference for next time
+				prefs.put(PREFS_FFMPEG_FOLDER_LOC, xx.getAbsolutePath());
+				return true;
+			}
+		}
+		//giving up!
+		JOptionPane.showMessageDialog(null, "FFmpeg libraries could not be located or are invalid", "Can't fine FFmpeg", JOptionPane.ERROR_MESSAGE);
+		return false;
 	}
 	
 	/**
@@ -92,53 +142,41 @@ public class KonvertiMain {
     }
 	
 	/**
-	 * attempt to find the FFmpeg libraries 
+	 * Attempt to find the FFmpeg libraries, called when the program is first starting
 	 * @return false if libraries can't be found, true otherwise
 	 */
 	private static boolean initFFmpeg() {
-		//first, see if all binaries will just work on command-line automatically
-		if (testFFmpeg()) {
-			return true;
-		}
-		//see if an existing preference links to ffmpeg file location
+		//see if an existing preference links to valid ffmpeg file location
 		prefs = Preferences.userRoot().node(PREFS_NAME);
 		if (!prefs.get(PREFS_FFMPEG_FOLDER_LOC, PREFS_NOVALUE).equals(PREFS_NOVALUE)) {
 			//preference file exists
 			String prefLoc = prefs.get(PREFS_FFMPEG_FOLDER_LOC, PREFS_NOVALUE);
-			File prefFile = new File(prefLoc);
-			if (prefFile.exists()) {
-				if (testFFmpeg(prefLoc)) {
-					//preference file exists, and works!
-					FFMPEG_BIN_FOLDER = prefLoc;
+			if (prefLoc.equals("")) {
+				if (testFFmpeg()) {
 					return true;
+				}
+			} else {
+				File prefFile = new File(prefLoc);
+				if (prefFile.exists()) {
+					if (testFFmpeg(prefLoc)) {
+						//preference file exists, and works!
+						FFMPEG_BIN_FOLDER = prefLoc + File.separator;
+						return true;
+					}
 				}
 			}
 		}
-		//query user to find FFmpeg folder
-		JOptionPane.showMessageDialog(null, "Whoa there! First, we need to locate the FFmpeg folder\n"
-				+ "on your machine. Please select the folder that contains the FFmpeg executables.\n They are "
-				+ "probably in a folder named 'bin' inside the FFmpeg directory.\n"
-				+ "You should only have to do this once.\n Go to http://ffmpeg.org if you need to download these files."
-				, "Find FFmpeg", JOptionPane.WARNING_MESSAGE);
-		JFileChooser fc_findlibs = new JFileChooser();
-		fc_findlibs.setMultiSelectionEnabled(false);
-		fc_findlibs.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int response = fc_findlibs.showOpenDialog(null);
-		if (response == JFileChooser.CANCEL_OPTION) {
-			return false;
-		}
-		File x = fc_findlibs.getSelectedFile();
-		if (!x.exists() || !x.isDirectory()) {
-			return false;
-		}
-		if (testFFmpeg(x.getAbsolutePath())) {
-			FFMPEG_BIN_FOLDER = x.getAbsolutePath();
-			//set preference for next time
-			prefs.put(PREFS_FFMPEG_FOLDER_LOC, x.getAbsolutePath());
+		//no valid pref file exists; so try some default locations 
+		//first, try the raw command line version
+		if (testFFmpeg()) {
+			prefs.put(PREFS_FFMPEG_FOLDER_LOC, "");
 			return true;
 		}
-		//giving up!
-		return false;
+		//can't find it automatically; user will have to find it for us
+		JOptionPane.showMessageDialog(null, "Please select the folder that contains the FFmpeg executables.\n"
+				+ "Go to http://ffmpeg.org if you need to download these files."
+				+ "\nFor Windows users try http://ffmpeg.zeranoe.com/builds/ for precompiled builds.", "Find FFmpeg", JOptionPane.WARNING_MESSAGE);
+		return KonvertiMain.letUserPick();
 	}
 	
 	/**

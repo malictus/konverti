@@ -15,11 +15,16 @@ import malictus.konverti.examine.FFProbeExaminer;
 public class FileTable extends JTable {
 	
 	public final static String[] COLUMN_NAMES = new String[] {"File Name", "File Type", "Duration"};
+	//the vector of files that this table represents
 	private List<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
 	private MainPanel parentPanel;
+	//used for the counting process while processing
 	private int count_files;
+	//used for the counting process while processing
 	private int good_files;
+	//used to control thread handling
 	private boolean cancel_trigger = false;
+	//used to control thread handling
 	private boolean thread_is_running = false;
 	
 	/**
@@ -150,7 +155,7 @@ public class FileTable extends JTable {
 	}
 	
 	/**
-	 * Recursive method to add files to the list of files if they quality
+	 * Recursive method to add files to the list of files if they qualify
 	 * @param files the files to add to the list
 	 * @param numFiles the total number of files to be processed, so that the UI can show progress
 	 */

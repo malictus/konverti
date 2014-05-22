@@ -1,7 +1,7 @@
 package malictus.konverti;
 
 /**]
- * This class represents a single FFmpeg encoder.
+ * This class represents a single FFmpeg encoder (codec).
  * 
  * @author Jim Halliday
  */
@@ -10,6 +10,7 @@ public class Encoder {
 	public static final int TYPE_AUDIO = 1;
 	public static final int TYPE_SUBTITLE = 2;
 	public static final int TYPE_VIDEO = 3;
+	//one of the three types (audio, subtitle, and video)
 	private int type;
 	private String name;
 	private String long_name;
