@@ -108,6 +108,8 @@ public class FFmpegCommand {
 		if (audioQuality > -1) {
 			command = command + "-q:a " + audioQuality + " ";
 		}
+		//output file - should always be last
+		command = command + "\"" + outputFile + "\"";
 		return command;
 	}
 

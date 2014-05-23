@@ -2,9 +2,12 @@ package malictus.konverti.ui.main;
 
 import java.io.*;
 import java.util.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+
+import malictus.konverti.KonvertiMain;
 import malictus.konverti.KonvertiUtils;
 import malictus.konverti.examine.FFProbeExaminer;
 
@@ -15,8 +18,6 @@ import malictus.konverti.examine.FFProbeExaminer;
 public class FileTable extends JTable {
 	
 	public final static String[] COLUMN_NAMES = new String[] {"File Name", "File Type", "Duration"};
-	//the vector of files that this table represents
-	private List<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
 	private MainPanel parentPanel;
 	//used for the counting process while processing
 	private int count_files;
@@ -53,18 +54,10 @@ public class FileTable extends JTable {
 	};
 	
 	/**
-	 * Get method for the list of files
-	 * @return the list of files that are currently in this table
-	 */
-	protected List<FFProbeExaminer> getFFProbeFiles() {
-		return vec_files;
-	}
-	
-	/**
 	 * Remove all files from the file list and update UI
 	 */
 	protected void removeAllFiles() {
-		this.vec_files.clear();
+		KonvertiMain.vec_files.clear();
 		redoTable();
 		parentPanel.setStatus("removed all files from file list");
 	}
@@ -78,7 +71,7 @@ public class FileTable extends JTable {
 			return;
 		}
 		for( int i = selected.length - 1; i >= 0; i-- ) {   
-			this.vec_files.remove(selected[i]);
+			KonvertiMain.vec_files.remove(selected[i]);
 		}
 		redoTable();
 		parentPanel.setStatus("removed " + selected.length + " files from file list");
@@ -138,7 +131,7 @@ public class FileTable extends JTable {
 		good_files = 0;
 		addFilesToList(theFiles, numFiles);
 		if (good_files > 0) {
-			Collections.sort(vec_files);
+			Collections.sort(KonvertiMain.vec_files);
 			redoTable();
 		}
 		cancel_trigger = false;
@@ -185,7 +178,7 @@ public class FileTable extends JTable {
 			try {
 				FFProbeExaminer ffprobe = new FFProbeExaminer(theFile);
 				if (ffprobe.isValid()) {
-					vec_files.add(ffprobe);
+					KonvertiMain.vec_files.add(ffprobe);
 					good_files++;
 				} 
 			} catch (Exception err) {
@@ -201,8 +194,8 @@ public class FileTable extends JTable {
 	 */
 	private boolean alreadyHave(File aFile) {
 		int count = 0;
-		while (count < vec_files.size()) {
-			if (vec_files.get(count).getFile().equals(aFile)) {
+		while (count < KonvertiMain.vec_files.size()) {
+			if (KonvertiMain.vec_files.get(count).getFile().equals(aFile)) {
 				return true;
 			}
 			count++;
@@ -215,10 +208,10 @@ public class FileTable extends JTable {
 	 */
 	private void redoTable() {
 		//sort files
-		String[][] data = new String[vec_files.size()][FileTable.COLUMN_NAMES.length];
+		String[][] data = new String[KonvertiMain.vec_files.size()][FileTable.COLUMN_NAMES.length];
     	int count = 0;
-    	while (count < vec_files.size()) {
-    		FFProbeExaminer x = vec_files.get(count);
+    	while (count < KonvertiMain.vec_files.size()) {
+    		FFProbeExaminer x = KonvertiMain.vec_files.get(count);
     		data[count][0] = x.getFile().getName();
     		data[count][1] = x.getFormat();
     		data[count][2] = KonvertiUtils.showDuration(x.getDuration());

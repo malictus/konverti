@@ -42,20 +42,18 @@ public class ConversionPanel extends JDialog {
 	
 	/**
 	 * Initialize the conversion window without a target specified
-	 * @param incomingFilesList list of files to process
 	 * @param conversion_preset which preset to use for conversion
 	 */
-	public ConversionPanel(java.util.List<FFProbeExaminer> incomingFilesList, int conversion_preset) {
-		new ConversionPanel(incomingFilesList, conversion_preset, null);
+	public ConversionPanel(int conversion_preset) {
+		new ConversionPanel(conversion_preset, null);
 	}
 	
 	/**
 	 * Initialize the conversion window with a target specified
-	 * @param incomingFilesList list of files to process
 	 * @param conversion_preset which preset to use for conversion
 	 * @param target_folder the target folder where converted files should go, or null if files should go into original folder
 	 */
-	public ConversionPanel(java.util.List<FFProbeExaminer> incomingFilesList, int conversion_preset, File target_folder) {
+	public ConversionPanel(int conversion_preset, File target_folder) {
 		super();
 		this.target_folder = target_folder;
 		this.conversion_preset = conversion_preset;
@@ -118,7 +116,7 @@ public class ConversionPanel extends JDialog {
         }
         setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
         //set up processing thread
-        final java.util.List<FFProbeExaminer> incomingFilesListFinal = incomingFilesList;
+        final java.util.List<FFProbeExaminer> incomingFilesListFinal = KonvertiMain.vec_files;
         Runnable q = new Runnable() {
 			public void run() {
 				doConvert(incomingFilesListFinal);
@@ -171,8 +169,6 @@ public class ConversionPanel extends JDialog {
 		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath());
 		theCommand = addConversionParams(theCommand);
 		String command = theCommand.getCommand();
-		//output file
-		command = command + "\"" + outFile.getAbsolutePath() + "\"";
 		this.txt_cmdline.append("Command: " + command + "\n");
 		ProcessBuilder builder = new ProcessBuilder(command);
 	    final Process process = builder.start();

@@ -397,9 +397,9 @@ public class MainPanel extends JFrame {
 	 */
 	private void convertFiles() {
 		if (this.chk_loc.isSelected()) {
-			new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex(), this.convert_folder);
+			new ConversionPanel(this.comb_preset.getSelectedIndex(), this.convert_folder);
 		} else {
-			new ConversionPanel(tbl_file.getFFProbeFiles(), this.comb_preset.getSelectedIndex());
+			new ConversionPanel(this.comb_preset.getSelectedIndex());
 		}
 	}
 	
@@ -407,8 +407,7 @@ public class MainPanel extends JFrame {
 	 * Show custom convert dialogs
 	 */
 	private void customConvertFiles() {
-		//TODO do something
-		//new CustomConversionPanel(this, tbl_file.getFFProbeFiles());
+		new PickerFormat(this);
 	}
 	
 	/**
@@ -417,7 +416,7 @@ public class MainPanel extends JFrame {
 	 * @return the string of file information
 	 */
 	private String showFileInfoFor(int selectedRow) {
-		FFProbeExaminer f = tbl_file.getFFProbeFiles().get(selectedRow);
+		FFProbeExaminer f = KonvertiMain.vec_files.get(selectedRow);
 		String val = "";
 		try {
 			val = val + "Path: " + f.getFile().getCanonicalPath() + "\n";
@@ -455,7 +454,7 @@ public class MainPanel extends JFrame {
 	private void openWithDefault() {
 		if (tbl_file.getSelectedRow() >= 0) {
 			try {
-				Desktop.getDesktop().open(tbl_file.getFFProbeFiles().get(tbl_file.getSelectedRow()).getFile());
+				Desktop.getDesktop().open(KonvertiMain.vec_files.get(tbl_file.getSelectedRow()).getFile());
 			} catch (IOException err) {
 				err.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Error opening default application", "Error opening file", JOptionPane.ERROR_MESSAGE);

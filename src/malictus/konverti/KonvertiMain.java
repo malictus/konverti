@@ -2,10 +2,14 @@ package malictus.konverti;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.*;
+
+import java.util.List;
 import java.util.Vector;
 import java.util.prefs.*;
 
+import malictus.konverti.examine.FFProbeExaminer;
 import malictus.konverti.ui.main.*;
 
 /**
@@ -19,21 +23,22 @@ public class KonvertiMain {
 	/* 
 	 * ADD A NEW PREFERENCE FOR CURRENT LOCATION THAT FILES GO (AND WHETHER TO SELECT IT OR NOT)
 	 * 
-     * CREATE 'PRESET' CLASS and put in it:
-     *       - from MainPanel, logic in populateComboBox including missing encoders thing
-     *       - from ConversionPanel, preset constants
-     *       - from ConversionPanel, addConversionParams() and runFFMpegCommand
-     *       - from ConversionPanel, getExtension()
-     *       have program initialize a vector of 'presets' at startup, and just read from those to do stuff
-     * 
      * Flesh out custom button for wav/aiff/mp3, incl refactor as I can
+     * Then add instructions for adding more below
 	 * 
 	 * Create executable for windows
 	 * Update license, readme, and documentation in source
 	 * Upload various versions to sourceforge
 	 * Website up
+	 */
+	
+	/**
+	 * How to create new presets
 	 * 
-	 * Add more stuff
+	 * 1. Add a new PRESET_... constant to ConversionPanel
+	 * 2. Add appropriate conversion parameters to ConversionPanel.addConversionParams()
+	 * 3. Add appropriate extension to ConversionPanel.getExtension()
+	 * 4. Add logic to MainPanel.populateComboBox()
 	 */
 	
 	//file folder location (plus trailing file separator) for ffmpeg and ffprobe, not including trailing slash
@@ -51,6 +56,8 @@ public class KonvertiMain {
 	public static Vector<Encoder> encoders;
 	//preferences 
 	private static Preferences prefs;
+	//the vector of files that are to be processed
+	public static List<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
 
 	/**
 	 * Main method for program
