@@ -166,8 +166,8 @@ public class ConversionPanel extends JDialog {
 	 * @throws IOException if read/write errors occur
 	 */
 	private void runFFMpegCommand(File inFile, File outFile) throws IOException {
-		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath());
-		theCommand = addConversionParams(theCommand);
+		FFmpegParams params = getConversionParams();
+		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath(), params);
 		String command = theCommand.getCommand();
 		this.txt_cmdline.append("Command: " + command + "\n");
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -188,11 +188,11 @@ public class ConversionPanel extends JDialog {
 	}
 	
 	/**
-	 * Figure out what to append to the command line, based on the selected preset
-	 * @return the FFmpegCommand with appropriate parameters appended
-	 * @param command the FFmpegCommand that we start with
+	 * Generate the command line options, based on the selected preset
+	 * @return the FFmpegParams with appropriate parameters
 	 */
-	private FFmpegCommand addConversionParams(FFmpegCommand command) {
+	private FFmpegParams getConversionParams() {
+		FFmpegParams command = new FFmpegParams();
 		if (conversion_preset == PRESET_WAV_CD) {
 			command.setAudioOnly(true);
 			command.setAudioSampleRate(44100);

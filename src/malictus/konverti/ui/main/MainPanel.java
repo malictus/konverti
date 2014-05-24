@@ -407,7 +407,8 @@ public class MainPanel extends JFrame {
 	 * Show custom convert dialogs
 	 */
 	private void customConvertFiles() {
-		new PickerFormat(this);
+		FFmpegParams params = new FFmpegParams();
+		new PickerFormat(this, params);
 	}
 	
 	/**
