@@ -16,6 +16,7 @@ public abstract class PickerDialog extends JDialog {
 	//the parent and command should be persisted from dialog to dialog
 	protected MainPanel parent;
 	protected FFmpegParams params;
+	protected String extension;
 	//default values for width and height
 	private static final int WIDTH = 300;
 	private static final int HEIGHT = 200;
@@ -25,12 +26,15 @@ public abstract class PickerDialog extends JDialog {
 	
 	/**
 	 * Initialize the format picker dialog
-	 * @param parent
+	 * @param parent the parent dialog
+	 * @param params the params object to be modified
+	 * @param extension the file extension of the file once converted (will be null until extension is chosen)
 	 */
-	public PickerDialog(MainPanel parent, FFmpegParams params) {
+	public PickerDialog(MainPanel parent, FFmpegParams params, String extension) {
 		super();
 		this.params = params;
 		this.parent = parent;
+		this.extension = extension;
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
