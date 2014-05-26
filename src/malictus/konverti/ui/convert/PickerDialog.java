@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import malictus.konverti.FFmpegParams;
-import malictus.konverti.ui.main.MainPanel;
+import malictus.konverti.FFmpegStruct;
 
 /**
  * A simple dialog that allows the user to pick something. This is the abstract class that all picker dialogs extend.
@@ -13,10 +12,8 @@ import malictus.konverti.ui.main.MainPanel;
  */
 public abstract class PickerDialog extends JDialog {
 	
-	//the parent and command should be persisted from dialog to dialog
-	protected MainPanel parent;
-	protected FFmpegParams params;
-	protected String extension;
+	//this should be build and persisted from dialog to dialog
+	protected FFmpegStruct struct;
 	//default values for width and height
 	private static final int WIDTH = 300;
 	private static final int HEIGHT = 200;
@@ -26,15 +23,11 @@ public abstract class PickerDialog extends JDialog {
 	
 	/**
 	 * Initialize the format picker dialog
-	 * @param parent the parent dialog
-	 * @param params the params object to be modified
-	 * @param extension the file extension of the file once converted (will be null until extension is chosen)
+	 * @param struct the struct object to pass through the window
 	 */
-	public PickerDialog(MainPanel parent, FFmpegParams params, String extension) {
+	public PickerDialog(FFmpegStruct struct) {
 		super();
-		this.params = params;
-		this.parent = parent;
-		this.extension = extension;
+		this.struct = struct;
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
@@ -59,7 +52,7 @@ public abstract class PickerDialog extends JDialog {
         contentPanel.setOpaque(true); 
         setContentPane(contentPanel);
         setResizable(true);
-        this.setMinimumSize(new Dimension(WIDTH, HEIGHT));;
+        this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setSize(WIDTH, HEIGHT);
         //center on screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -85,13 +78,9 @@ public abstract class PickerDialog extends JDialog {
 		setVisible(false);
         dispose();
 	}
-	
-	public MainPanel getParent() {
-		return parent;
-	}
-	
-	public FFmpegParams getParams() {
-		return params;
+
+	public FFmpegStruct getStruct() {
+		return struct;
 	}
 
 }

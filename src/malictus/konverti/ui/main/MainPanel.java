@@ -399,7 +399,7 @@ public class MainPanel extends JFrame {
 		if (this.chk_loc.isSelected()) {
 			new ConversionPanel(this.comb_preset.getSelectedIndex(), this.convert_folder);
 		} else {
-			new ConversionPanel(this.comb_preset.getSelectedIndex());
+			new ConversionPanel(this.comb_preset.getSelectedIndex(), null);
 		}
 	}
 	
@@ -408,7 +408,15 @@ public class MainPanel extends JFrame {
 	 */
 	private void customConvertFiles() {
 		FFmpegParams params = new FFmpegParams();
-		new PickerFormat(this, params);
+		
+		if (this.chk_loc.isSelected()) {
+			FFmpegStruct struct = new FFmpegStruct(params, null, this.convert_folder);
+			new PickerFormat(struct);
+		} else {
+			FFmpegStruct struct = new FFmpegStruct(params, null, null);
+			new PickerFormat(struct);
+		}
+		
 	}
 	
 	/**

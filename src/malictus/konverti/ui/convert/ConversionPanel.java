@@ -27,10 +27,8 @@ public class ConversionPanel extends JDialog {
 	private JButton btn_stop;
 	//thread control
 	private boolean cancel_signal = false;
-	//the folder that new files should go into, or null if new files should go to the same directory as the originals
-	private File target_folder = null;
-	//which conversion preset to use when running FFmpeg; will be one of the PRESET_ static values
-	private int conversion_preset;
+	//FFmpegStruct object, either passed into from the custom dialogs, or generated from a preset
+	private FFmpegStruct struct;
 	//presets, which should match the preset combox box on the parent window
 	public static final int PRESET_WAV_CD = 1;
 	public static final int PRESET_MP3_CBR_HI_320 = 2;
@@ -41,22 +39,38 @@ public class ConversionPanel extends JDialog {
 	public static final int PRESET_MP3_VBR_LOW_7 = 7;
 	
 	/**
-	 * Initialize the conversion window without a target specified
-	 * @param conversion_preset which preset to use for conversion
+	 * Initialize the conversion window from a struct passed in from the custom dialogs
+	 * @param struct the structure object passed in from the custom dialogs
 	 */
-	public ConversionPanel(int conversion_preset) {
-		new ConversionPanel(conversion_preset, null);
+	public ConversionPanel(FFmpegStruct struct) {
+		new ConversionPanel(struct, -1, null);
 	}
 	
 	/**
-	 * Initialize the conversion window with a target specified
+	 * Initialize the conversion window with a preset
 	 * @param conversion_preset which preset to use for conversion
-	 * @param target_folder the target folder where converted files should go, or null if files should go into original folder
+	 * @param convert_folder the folder to send converted files to; or set as null to send converted files to the same folder as original
 	 */
 	public ConversionPanel(int conversion_preset, File target_folder) {
+		new ConversionPanel(null, conversion_preset, target_folder);
+	}
+	
+	/**
+	 * Initialize the conversion window
+	 * @param struct the struct object passed in from the custom dialogs, or null if using a preset
+	 * @param conversion_preset the conversion preset passed in, or -1 if using custom dialogs
+	 * @param target_folder the target folder, BUT only if using a conversion preset
+	 */
+	private ConversionPanel(FFmpegStruct struct, int conversion_preset, File target_folder) {
 		super();
-		this.target_folder = target_folder;
-		this.conversion_preset = conversion_preset;
+		if (struct != null) {
+			this.struct = struct;
+		} else {
+			//use preset instead
+			FFmpegParams params = getConversionParams(conversion_preset);
+			struct = new FFmpegStruct(params, getExtension(conversion_preset), target_folder);
+		}
+		this.struct = struct;
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
@@ -166,8 +180,7 @@ public class ConversionPanel extends JDialog {
 	 * @throws IOException if read/write errors occur
 	 */
 	private void runFFMpegCommand(File inFile, File outFile) throws IOException {
-		FFmpegParams params = getConversionParams();
-		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath(), params);
+		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath(), struct.params);
 		String command = theCommand.getCommand();
 		this.txt_cmdline.append("Command: " + command + "\n");
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -188,10 +201,57 @@ public class ConversionPanel extends JDialog {
 	}
 	
 	/**
+	 * Iterate through the incoming files, and attempt to find appropriate names for new files to use for conversion
+	 * @param incomingFilesList the incoming files from FFProbe
+	 */
+	private Vector<ConvertFileEntry> populateFilesList(java.util.List<FFProbeExaminer> incomingFilesList) {
+		Vector<ConvertFileEntry> vec_cfe = new Vector<ConvertFileEntry>();
+		int counter = 0;
+		while (counter < incomingFilesList.size()) {
+			try {
+				File inFile = incomingFilesList.get(counter).getFile();
+				ConvertFileEntry cfe = new ConvertFileEntry(inFile, struct.extension, struct.convert_folder);
+				vec_cfe.add(cfe);
+			} catch (Exception err) {
+				//something weird happened, but no need to abort, just keep going
+			}
+			counter++;
+		}
+		return vec_cfe;
+	}
+	
+	/**
+	 * Cancel the current file conversion process so the window can be closed.
+	 */
+	private void cancelProcessing() {
+		btn_close.setEnabled(true);
+		btn_stop.setEnabled(false);
+		lbl_status.setText("Status: Conversion canceled.");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		cancel_signal = true;
+	}
+	
+	/**
+	 * Figure out what extension should go on the end of the file based on the new file type
+	 * @return
+	 */
+	private String getExtension(int conversion_preset) {
+		if (conversion_preset == PRESET_WAV_CD) {
+			return "wav";
+		}
+		if ((conversion_preset == PRESET_MP3_CBR_HI_320) || (conversion_preset == PRESET_MP3_CBR_MID_192) ||
+				(conversion_preset == PRESET_MP3_CBR_LO_128) || (conversion_preset == PRESET_MP3_VBR_HI_0) ||
+				(conversion_preset == PRESET_MP3_VBR_MID_4) || (conversion_preset == PRESET_MP3_VBR_LOW_7)) {
+			return "mp3";
+		}
+		return "";
+	}
+	
+	/**
 	 * Generate the command line options, based on the selected preset
 	 * @return the FFmpegParams with appropriate parameters
 	 */
-	private FFmpegParams getConversionParams() {
+	private FFmpegParams getConversionParams(int conversion_preset) {
 		FFmpegParams command = new FFmpegParams();
 		if (conversion_preset == PRESET_WAV_CD) {
 			command.setAudioOnly(true);
@@ -224,54 +284,6 @@ public class ConversionPanel extends JDialog {
 			command.setAudioQuality(7);
 		}
 		return command;
-	}
-	
-	/**
-	 * Iterate through the incoming files, and attempt to find appropriate names for new files to use for conversion
-	 * @param incomingFilesList the incoming files from FFProbe
-	 */
-	private Vector<ConvertFileEntry> populateFilesList(java.util.List<FFProbeExaminer> incomingFilesList) {
-		Vector<ConvertFileEntry> vec_cfe = new Vector<ConvertFileEntry>();
-		String extension = getExtension();
-		int counter = 0;
-		while (counter < incomingFilesList.size()) {
-			try {
-				File inFile = incomingFilesList.get(counter).getFile();
-				ConvertFileEntry cfe = new ConvertFileEntry(inFile, extension, target_folder);
-				vec_cfe.add(cfe);
-			} catch (Exception err) {
-				//something weird happened, but no need to abort, just keep going
-			}
-			counter++;
-		}
-		return vec_cfe;
-	}
-	
-	/**
-	 * Cancel the current file conversion process so the window can be closed.
-	 */
-	private void cancelProcessing() {
-		btn_close.setEnabled(true);
-		btn_stop.setEnabled(false);
-		lbl_status.setText("Status: Conversion canceled.");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		cancel_signal = true;
-	}
-	
-	/**
-	 * Figure out what extension should go on the end of the file based on the new file type
-	 * @return
-	 */
-	private String getExtension() {
-		if (conversion_preset == PRESET_WAV_CD) {
-			return "wav";
-		}
-		if ((conversion_preset == PRESET_MP3_CBR_HI_320) || (conversion_preset == PRESET_MP3_CBR_MID_192) ||
-				(conversion_preset == PRESET_MP3_CBR_LO_128) || (conversion_preset == PRESET_MP3_VBR_HI_0) ||
-				(conversion_preset == PRESET_MP3_VBR_MID_4) || (conversion_preset == PRESET_MP3_VBR_LOW_7)) {
-			return "mp3";
-		}
-		return "";
 	}
 
 }

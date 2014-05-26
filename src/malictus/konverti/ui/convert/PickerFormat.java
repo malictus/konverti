@@ -4,12 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
-
-import malictus.konverti.FFmpegParams;
+import malictus.konverti.FFmpegStruct;
 import malictus.konverti.KonvertiUtils;
-import malictus.konverti.ui.main.MainPanel;
 
 /**
  * A simple dialog that allows the user to pick a target format (file extension) and start the process of a custom convert.
@@ -21,11 +18,10 @@ public class PickerFormat extends PickerDialog {
 	
 	/**
 	 * Initialize the format picker window
-	 * @param parent the parent panel
-	 * @params params the FFmpegParams object to use
+	 * @param struct the struct object to pass through
 	 */
-	public PickerFormat(MainPanel parent, FFmpegParams params) {
-		super(parent, params, null);
+	public PickerFormat(FFmpegStruct struct) {
+		super(struct);
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
@@ -68,14 +64,15 @@ public class PickerFormat extends PickerDialog {
 	private void doNext() {
 		if (comb_format.getSelectedIndex() == 0) {
 			//WAV
-			params.setAudioEncodingCodec("pcm_s16le");
-			//TODO finish
-			//new AudioOptionsPicker(parent, params, "wav");
+			struct.params.setAudioEncodingCodec("pcm_s16le");
+			struct.extension = "wav";
+			new PickerAudioOptions(struct);
 		} else if (comb_format.getSelectedIndex() == 1) {
 			//MP3
-			params.setAudioEncodingCodec("libmp3lame");
+			struct.params.setAudioEncodingCodec("libmp3lame");
+			struct.extension = "mp3";
 			//TODO finish
-			//new MP3Picker(parent, params, "mp3");
+			//new PickerMP3(struct);
 		}
 		setVisible(false);
         dispose();

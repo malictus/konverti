@@ -24,12 +24,18 @@ public class KonvertiMain {
 	 * ADD A NEW PREFERENCE FOR CURRENT LOCATION THAT FILES GO (AND WHETHER TO SELECT IT OR NOT)
 	 * 
      * Flesh out custom button for wav/aiff/mp3, incl refactor as I can
-     * Then add instructions for adding more below
 	 * 
 	 * Create executable for windows
 	 * Update license, readme, and documentation in source
 	 * Upload various versions to sourceforge
 	 * Website up
+	 */
+	
+	/**
+	 * How to add new formats
+	 * 
+	 * 1. Add appropriate values in PickerFormat combo box.
+	 * 2. Add appropriate windows to fill in values.
 	 */
 	
 	/**
@@ -45,7 +51,7 @@ public class KonvertiMain {
 	//if this String is blank, they can be called directly from command line 
 	public static String FFMPEG_BIN_FOLDER = "";
 	//current version
-	public static float VERSION = 0.02f;
+	public static float VERSION = 0.03f;
 	//name of preferences node to use for all prefs
 	private static final String PREFS_NAME = "Konverti_Preferences";
 	//holds saved folder location for FFmpeg binary files
