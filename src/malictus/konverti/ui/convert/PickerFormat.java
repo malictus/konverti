@@ -72,7 +72,7 @@ public class PickerFormat extends PickerDialog {
 			struct.params.setAudioEncodingCodec("libmp3lame");
 			struct.extension = "mp3";
 			//TODO finish
-			//new PickerMP3(struct);
+			new PickerMP3(struct);
 		}
 		setVisible(false);
         dispose();

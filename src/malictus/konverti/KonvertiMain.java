@@ -23,8 +23,6 @@ public class KonvertiMain {
 	/* 
 	 * ADD A NEW PREFERENCE FOR CURRENT LOCATION THAT FILES GO (AND WHETHER TO SELECT IT OR NOT)
 	 * 
-     * Flesh out custom button for wav/aiff/mp3, incl refactor as I can
-	 * 
 	 * Create executable for windows
 	 * Update license, readme, and documentation in source
 	 * Upload various versions to sourceforge

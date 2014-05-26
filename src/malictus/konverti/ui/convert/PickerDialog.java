@@ -51,8 +51,7 @@ public abstract class PickerDialog extends JDialog {
         //finalize
         contentPanel.setOpaque(true); 
         setContentPane(contentPanel);
-        setResizable(true);
-        this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+        setResizable(false);
         setSize(WIDTH, HEIGHT);
         //center on screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
