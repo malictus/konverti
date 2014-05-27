@@ -18,17 +18,6 @@ import malictus.konverti.ui.main.*;
  */
 public class KonvertiMain {
 	
-	//TODO overall tasks
-	
-	/* 
-	 * ADD A NEW PREFERENCE FOR CURRENT LOCATION THAT FILES GO (AND WHETHER TO SELECT IT OR NOT)
-	 * 
-	 * Create executable for windows
-	 * Update readme, and documentation in source
-	 * Upload various versions to sourceforge
-	 * Website up
-	 */
-	
 	/**
 	 * How to add new formats
 	 * 
