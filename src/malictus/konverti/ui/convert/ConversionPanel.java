@@ -37,6 +37,8 @@ public class ConversionPanel extends JDialog {
 	public static final int PRESET_MP3_VBR_HI_0 = 5;
 	public static final int PRESET_MP3_VBR_MID_4 = 6;
 	public static final int PRESET_MP3_VBR_LOW_7 = 7;
+	public static final int PRESET_VORBIS_LOW_3 = 8;
+	public static final int PRESET_VORBIS_HI_7 = 9;
 	
 	/**
 	 * Initialize the conversion window from a struct passed in from the custom dialogs
@@ -244,6 +246,9 @@ public class ConversionPanel extends JDialog {
 				(conversion_preset == PRESET_MP3_VBR_MID_4) || (conversion_preset == PRESET_MP3_VBR_LOW_7)) {
 			return "mp3";
 		}
+		if ((conversion_preset == PRESET_VORBIS_LOW_3) || (conversion_preset == PRESET_VORBIS_HI_7)) {
+			return "ogg";
+		}
 		return "";
 	}
 	
@@ -281,6 +286,14 @@ public class ConversionPanel extends JDialog {
 		} else if (conversion_preset == PRESET_MP3_VBR_LOW_7) {
 			command.setAudioOnly(true);
 			command.setAudioEncodingCodec("libmp3lame");
+			command.setAudioQuality(7);
+		} else if (conversion_preset == PRESET_VORBIS_LOW_3) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libvorbis");
+			command.setAudioQuality(3);
+		} else if (conversion_preset == PRESET_VORBIS_HI_7) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libvorbis");
 			command.setAudioQuality(7);
 		}
 		return command;

@@ -389,6 +389,13 @@ public class MainPanel extends JFrame {
 			comb_preset.addItem("(Missing encoder) - MP3 VBR - MID");
 			comb_preset.addItem("(Missing encoder) - MP3 VBR - LOW");
 		}
+		if (KonvertiUtils.encoderIsPreset("libvorbis")) {
+			comb_preset.addItem("OGG Vorbis - LOW");
+			comb_preset.addItem("OGG Vorbis - HI");
+		} else {
+			comb_preset.addItem("(Missing encoder) - OGG Vorbis - LOW");
+			comb_preset.addItem("(Missing encoder) - OGG Vorbis - HI");
+		}
 			
 	}
 	

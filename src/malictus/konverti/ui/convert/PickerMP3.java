@@ -19,7 +19,7 @@ public class PickerMP3 extends PickerDialog {
 	private JRadioButton chk_quality;
 	
 	/**
-	 * Initialize the audio options picker window
+	 * Initialize the MP3 options picker window
 	 * @param struct the struct to pass through
 	 */
 	public PickerMP3(FFmpegStruct struct) {

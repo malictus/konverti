@@ -32,7 +32,7 @@ public class KonvertiMain {
 	/**
 	 * How to add new formats
 	 * 
-	 * 1. Add appropriate values in PickerFormat combo box.
+	 * 1. Add appropriate values in PickerFormat combo box and doNext() method.
 	 * 2. Add appropriate windows to fill in values.
 	 */
 	
