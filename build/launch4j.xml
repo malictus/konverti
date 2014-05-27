@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>D:\eclipse projects\konverti\konverti\build\konverti.jar</jar>
-  <outfile>D:\eclipse projects\konverti\konverti\build\Konverti.exe</outfile>
+  <outfile>D:\eclipse projects\konverti\konverti\build\konverti.exe</outfile>
   <errTitle>Konverti Error</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>

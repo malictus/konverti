@@ -79,7 +79,6 @@ public class PickerFormat extends PickerDialog {
 			struct.params.setAudioEncodingCodec("libmp3lame");
 			struct.params.setAudioOnly(true);
 			struct.extension = "mp3";
-			//TODO finish
 			new PickerMP3(struct);
 		} else if (comb_format.getSelectedIndex() == 2) {
 			//OGG Vorbis
