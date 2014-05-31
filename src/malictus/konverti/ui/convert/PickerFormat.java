@@ -30,13 +30,15 @@ public class PickerFormat extends PickerDialog {
         comb_format = new JComboBox<String>();
         //entry 0 - WAV audio
         comb_format.addItem("WAV audio");
-        //entry 1 - mp3 audio
+        //entry 1 - AIFF audio
+        comb_format.addItem("AIFF audio");
+        //entry 2 - mp3 audio
         if (KonvertiUtils.encoderIsPreset("libmp3lame")) {
         	comb_format.addItem("MP3 audio");
         } else {
         	comb_format.addItem("(Missing encoder) - MP3 audio");
         }
-        //entry 2 - ogg vorbis audio
+        //entry 3 - ogg vorbis audio
         if (KonvertiUtils.encoderIsPreset("libvorbis")) {
         	comb_format.addItem("OGG Vorbis audio");
         } else {
@@ -71,12 +73,18 @@ public class PickerFormat extends PickerDialog {
 			struct.extension = "wav";
 			new PickerWAV(struct);
 		} else if (comb_format.getSelectedIndex() == 1) {
+			//AIFF
+			//codec will be set later
+			struct.params.setAudioOnly(true);
+			struct.extension = "aiff";
+			new PickerAIFF(struct);
+		} else if (comb_format.getSelectedIndex() == 2) {
 			//MP3
 			struct.params.setAudioEncodingCodec("libmp3lame");
 			struct.params.setAudioOnly(true);
 			struct.extension = "mp3";
 			new PickerMP3(struct);
-		} else if (comb_format.getSelectedIndex() == 2) {
+		} else if (comb_format.getSelectedIndex() == 3) {
 			//OGG Vorbis
 			struct.params.setAudioEncodingCodec("libvorbis");
 			struct.params.setAudioOnly(true);

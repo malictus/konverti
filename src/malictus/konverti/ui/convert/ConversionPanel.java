@@ -31,14 +31,15 @@ public class ConversionPanel extends JDialog {
 	private FFmpegStruct struct;
 	//presets, which should match the preset combox box on the parent window
 	public static final int PRESET_WAV_CD = 1;
-	public static final int PRESET_MP3_CBR_HI_320 = 2;
-	public static final int PRESET_MP3_CBR_MID_192 = 3;
-	public static final int PRESET_MP3_CBR_LO_128 = 4;	
-	public static final int PRESET_MP3_VBR_HI_0 = 5;
-	public static final int PRESET_MP3_VBR_MID_4 = 6;
-	public static final int PRESET_MP3_VBR_LOW_7 = 7;
-	public static final int PRESET_VORBIS_LOW_3 = 8;
-	public static final int PRESET_VORBIS_HI_7 = 9;
+	public static final int PRESET_AIFF_CD = 2;
+	public static final int PRESET_MP3_CBR_HI_320 = 3;
+	public static final int PRESET_MP3_CBR_MID_192 = 4;
+	public static final int PRESET_MP3_CBR_LO_128 = 5;	
+	public static final int PRESET_MP3_VBR_HI_0 = 6;
+	public static final int PRESET_MP3_VBR_MID_4 = 7;
+	public static final int PRESET_MP3_VBR_LOW_7 = 8;
+	public static final int PRESET_VORBIS_LOW_3 = 9;
+	public static final int PRESET_VORBIS_HI_7 = 10;
 	
 	/**
 	 * Initialize the conversion window from a struct passed in from the custom dialogs
@@ -241,6 +242,9 @@ public class ConversionPanel extends JDialog {
 		if (conversion_preset == PRESET_WAV_CD) {
 			return "wav";
 		}
+		if (conversion_preset == PRESET_AIFF_CD) {
+			return "aiff";
+		}
 		if ((conversion_preset == PRESET_MP3_CBR_HI_320) || (conversion_preset == PRESET_MP3_CBR_MID_192) ||
 				(conversion_preset == PRESET_MP3_CBR_LO_128) || (conversion_preset == PRESET_MP3_VBR_HI_0) ||
 				(conversion_preset == PRESET_MP3_VBR_MID_4) || (conversion_preset == PRESET_MP3_VBR_LOW_7)) {
@@ -263,6 +267,11 @@ public class ConversionPanel extends JDialog {
 			command.setAudioSampleRate(44100);
 			command.setAudioChannels(2);
 			command.setAudioEncodingCodec("pcm_s16le");
+		} else if (conversion_preset == PRESET_AIFF_CD) {
+				command.setAudioOnly(true);
+				command.setAudioSampleRate(44100);
+				command.setAudioChannels(2);
+				command.setAudioEncodingCodec("pcm_s16be");
 		} else if (conversion_preset == PRESET_MP3_CBR_HI_320) {
 			command.setAudioOnly(true);
 			command.setAudioEncodingCodec("libmp3lame");

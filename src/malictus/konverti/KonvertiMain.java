@@ -29,7 +29,7 @@ public class KonvertiMain {
 	 * How to create new presets
 	 * 
 	 * 1. Add a new PRESET_... constant to ConversionPanel
-	 * 2. Add appropriate conversion parameters to ConversionPanel.addConversionParams()
+	 * 2. Add appropriate conversion parameters to ConversionPanel.getConversionParams()
 	 * 3. Add appropriate extension to ConversionPanel.getExtension()
 	 * 4. Add logic to MainPanel.populateComboBox()
 	 */

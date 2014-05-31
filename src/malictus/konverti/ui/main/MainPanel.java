@@ -369,7 +369,8 @@ public class MainPanel extends JFrame {
 	}
 	
 	/**
-	 * Populate the combo box, including disabling any presets that won't work due to missing encoders
+	 * Populate the combo box, including disabling any presets that won't work due to missing encoders. These can't be reordered without
+	 * also changing preset value constants in ConversionPanel.
 	 */
 	private void populateComboBox() {
 		comb_preset.addItem("Select a preset:");
@@ -377,6 +378,11 @@ public class MainPanel extends JFrame {
 			comb_preset.addItem("WAV File for CD Burning");
 		} else {
 			comb_preset.addItem("(Missing encoder) - WAV File for CD Burning");
+		}
+		if (KonvertiUtils.encoderIsPreset("pcm_s16be")) {
+			comb_preset.addItem("AIFF File for CD Burning");
+		} else {
+			comb_preset.addItem("(Missing encoder) - AIFF File for CD Burning");
 		}
 		if (KonvertiUtils.encoderIsPreset("libmp3lame")) {
 			comb_preset.addItem("MP3 CBR - 320K");
