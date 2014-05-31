@@ -1,0 +1,8 @@
+Installing Konverti
+
+1. Unzip package contents.
+2. Place the application file (exe for windows, or clickable jar for other systems) into the 'bin' directory in your FFmpeg install. 
+	FFmpeg and FFprobe MUST be found for the program to work!
+3. Create a shortcut to Konverti and place wherever you would like (desktop, etc.)
+
+Note that you must have Java 7 or later installed for the program to work!
