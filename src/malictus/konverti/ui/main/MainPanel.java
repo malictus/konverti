@@ -177,6 +177,16 @@ public class MainPanel extends JFrame {
         pnl_ffChoose.add(txt_ffChoose);
         pnl_ffChoose.add(btn_ffChoose);
         pnl_convert.add(pnl_ffChoose);
+        txt_Browse_Conv = new JTextField();
+        txt_Browse_Conv.setEditable(false);
+        txt_Browse_Conv.setEnabled(false);
+        txt_Browse_Conv.setPreferredSize(new Dimension(190, 22));
+        txt_Browse_Conv.setEnabled(KonvertiMain.FFMPEG_USE_CUSTOM_TARGET);
+        this.convert_folder = new File(KonvertiMain.FFMPEG_TARGET_FOLDER);
+        if (!this.convert_folder.exists()) {
+        	this.convert_folder = new File(System.getProperty("user.home"));
+        }
+        txt_Browse_Conv.setText(convert_folder.getAbsolutePath());
         chk_loc = new JCheckBox("Use this folder for all converted files:");
         chk_loc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -189,18 +199,12 @@ public class MainPanel extends JFrame {
                 }
             }
         }); 
-        chk_loc.setSelected(false);
+        chk_loc.setSelected(KonvertiMain.FFMPEG_USE_CUSTOM_TARGET);
         chk_loc.setAlignmentX(Component.CENTER_ALIGNMENT);
         pnl_convert.add(Box.createRigidArea(new Dimension(0, 4)));
         pnl_convert.add(chk_loc);
         JPanel pnl_Browse_Conv = new JPanel();
         pnl_Browse_Conv.setLayout(new FlowLayout());
-        txt_Browse_Conv = new JTextField();
-        txt_Browse_Conv.setEditable(false);
-        txt_Browse_Conv.setEnabled(false);
-        txt_Browse_Conv.setPreferredSize(new Dimension(190, 22));
-        this.convert_folder = new File(System.getProperty("user.home"));
-        txt_Browse_Conv.setText(convert_folder.getAbsolutePath());
         btn_Browse_Conv = new JButton("Choose...");
         btn_Browse_Conv.setMargin(new Insets(2,2,2,2));
         btn_Browse_Conv.setEnabled(false);
@@ -403,6 +407,7 @@ public class MainPanel extends JFrame {
 	 * Do the actual file conversion
 	 */
 	private void convertFiles() {
+		saveTargetPrefs();
 		if (this.chk_loc.isSelected()) {
 			new ConversionPanel(this.comb_preset.getSelectedIndex(), this.convert_folder);
 		} else {
@@ -414,16 +419,27 @@ public class MainPanel extends JFrame {
 	 * Show custom convert dialogs
 	 */
 	private void customConvertFiles() {
+		saveTargetPrefs();
 		FFmpegParams params = new FFmpegParams();
-		
 		if (this.chk_loc.isSelected()) {
 			FFmpegStruct struct = new FFmpegStruct(params, null, this.convert_folder);
 			new PickerFormat(struct);
 		} else {
 			FFmpegStruct struct = new FFmpegStruct(params, null, null);
 			new PickerFormat(struct);
+		}	
+	}
+	
+	/**
+	 * Save the prefs for the current target and target toggle for the next time app is started
+	 */
+	private void saveTargetPrefs() {
+		KonvertiMain.prefs.put(KonvertiMain.PREFS_TARGET_FOLDER_LOC, this.txt_Browse_Conv.getText());
+		if (this.chk_loc.isSelected()) {
+			KonvertiMain.prefs.put(KonvertiMain.PREFS_TARGET_FOLDER_TOGGLE, "true");
+		} else {
+			KonvertiMain.prefs.put(KonvertiMain.PREFS_TARGET_FOLDER_TOGGLE, "false");
 		}
-		
 	}
 	
 	/**

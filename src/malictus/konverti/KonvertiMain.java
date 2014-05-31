@@ -37,18 +37,26 @@ public class KonvertiMain {
 	//file folder location (plus trailing file separator) for ffmpeg and ffprobe, not including trailing slash
 	//if this String is blank, they can be called directly from command line 
 	public static String FFMPEG_BIN_FOLDER = "";
+	//file folder location for target files (if toggle is set)
+	public static String FFMPEG_TARGET_FOLDER = "";
+	//whether or not custom target is checked
+	public static boolean FFMPEG_USE_CUSTOM_TARGET = false;
 	//current version
-	public static float VERSION = 0.03f;
+	public static float VERSION = 0.04f;
 	//name of preferences node to use for all prefs
-	private static final String PREFS_NAME = "Konverti_Preferences";
+	public static final String PREFS_NAME = "Konverti_Preferences";
 	//holds saved folder location for FFmpeg binary files
-	private static final String PREFS_FFMPEG_FOLDER_LOC = "Konverti_ffMPEG_Folder";
+	public static final String PREFS_FFMPEG_FOLDER_LOC = "Konverti_ffMPEG_Folder";
+	//holds saved folder location for target folder for FFmpeg command
+	public static final String PREFS_TARGET_FOLDER_LOC = "Konverti_Target_Folder";
+	//holds saved boolean value ('true' or 'false') for whether or not to use a custom target folder
+	public static final String PREFS_TARGET_FOLDER_TOGGLE = "false";
 	//default value for no pref value present
-	private static final String PREFS_NOVALUE = "~Nope~";
+	public static final String PREFS_NOVALUE = "~Nope~";
 	//list of all available FFmpeg encoders
 	public static Vector<Encoder> encoders;
 	//preferences 
-	private static Preferences prefs;
+	public static Preferences prefs;
 	//the vector of files that are to be processed
 	public static List<FFProbeExaminer> vec_files = new Vector<FFProbeExaminer>();
 
@@ -76,6 +84,8 @@ public class KonvertiMain {
                 KonvertiMain.createAndShowGUI();
             }
         });
+		//see if there's a preference set for target location
+		setupTargetFolder();
 	}
 	
 	/**
@@ -96,6 +106,22 @@ public class KonvertiMain {
 	        }	
 		}
 		return KonvertiMain.letUserPick();
+	}
+	
+	/**
+	 * Configure the target folder from preferences
+	 */
+	private static void setupTargetFolder() {
+		if (prefs.get(PREFS_TARGET_FOLDER_TOGGLE, PREFS_NOVALUE).equals("true")) {
+			FFMPEG_USE_CUSTOM_TARGET = true;
+		} else {
+			FFMPEG_USE_CUSTOM_TARGET = false;
+		}
+		if (!prefs.get(PREFS_TARGET_FOLDER_LOC, PREFS_NOVALUE).equals(PREFS_NOVALUE)) {
+			FFMPEG_TARGET_FOLDER = prefs.get(PREFS_TARGET_FOLDER_LOC, PREFS_NOVALUE);
+		} else {
+			FFMPEG_TARGET_FOLDER = System.getProperty("user.home");
+		}
 	}
 	
 	/**
