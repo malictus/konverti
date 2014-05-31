@@ -1,5 +1,5 @@
 Konverti can currently convert files to the following formats:
 
-16-bit WAV
+WAV (8-bit, 16-bit, 24-bit, 32-bit, 32-bit float, 64-bit float)
 MP3 (VBR and CBR)
 OGG Vorbis
