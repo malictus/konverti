@@ -1,6 +1,6 @@
 Konverti can currently convert files to the following formats:
 
-WAV (uncompressed; 8-bit, 16-bit, 24-bit, 32-bit, 32-bit float, 64-bit float)
-AIFF (uncompressed; 8-bit, 16-bit, 16-bit OS X (sowt), 24-bit, 32-bit
+WAV (uncompressed: 8-bit, 16-bit, 24-bit, 32-bit, 32-bit float, 64-bit float)
+AIFF (uncompressed: 8-bit, 16-bit, 16-bit OS X (sowt), 24-bit, 32-bit)
 MP3 (VBR and CBR)
 OGG Vorbis
