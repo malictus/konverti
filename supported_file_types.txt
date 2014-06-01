@@ -4,3 +4,4 @@ WAV (uncompressed: 8-bit, 16-bit, 24-bit, 32-bit, 32-bit float, 64-bit float)
 AIFF (uncompressed: 8-bit, 16-bit, 16-bit OS X (sowt), 24-bit, 32-bit)
 MP3 (VBR and CBR)
 OGG Vorbis
+M4A (Preset only; need to add custom, including using multiple codecs)

@@ -40,6 +40,9 @@ public class ConversionPanel extends JDialog {
 	public static final int PRESET_MP3_VBR_LOW_7 = 8;
 	public static final int PRESET_VORBIS_LOW_3 = 9;
 	public static final int PRESET_VORBIS_HI_7 = 10;
+	public static final int PRESET_M4A_HI_320 = 11;
+	public static final int PRESET_M4A_MID_192 = 12;
+	public static final int PRESET_M4A_LO_128 = 13;
 	
 	/**
 	 * Initialize the conversion window from a struct passed in from the custom dialogs
@@ -253,6 +256,10 @@ public class ConversionPanel extends JDialog {
 		if ((conversion_preset == PRESET_VORBIS_LOW_3) || (conversion_preset == PRESET_VORBIS_HI_7)) {
 			return "ogg";
 		}
+		if ((conversion_preset == PRESET_M4A_HI_320) || (conversion_preset == PRESET_M4A_MID_192)
+				|| (conversion_preset == PRESET_M4A_LO_128)) {
+			return "m4a";
+		}
 		return "";
 	}
 	
@@ -304,8 +311,19 @@ public class ConversionPanel extends JDialog {
 			command.setAudioOnly(true);
 			command.setAudioEncodingCodec("libvorbis");
 			command.setAudioQuality(7);
+		} else if (conversion_preset == PRESET_M4A_HI_320) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libvo_aacenc");
+			command.setAudioBitRate("320k");
+		} else if (conversion_preset == PRESET_M4A_MID_192) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libvo_aacenc");
+			command.setAudioBitRate("192k");
+		} else if (conversion_preset == PRESET_M4A_LO_128) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("libvo_aacenc");
+			command.setAudioBitRate("128k");	
 		}
 		return command;
 	}
-
 }

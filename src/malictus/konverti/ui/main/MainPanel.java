@@ -406,7 +406,15 @@ public class MainPanel extends JFrame {
 			comb_preset.addItem("(Missing encoder) - OGG Vorbis - LOW");
 			comb_preset.addItem("(Missing encoder) - OGG Vorbis - HI");
 		}
-			
+		if (KonvertiUtils.encoderIsPreset("libvo_aacenc")) {
+			comb_preset.addItem("M4A Audio - 320K");
+			comb_preset.addItem("M4A Audio - 192K");
+			comb_preset.addItem("M4A Audio - 128K");
+		} else {
+			comb_preset.addItem("(Missing encoder) - M4A Audio - 320K");
+			comb_preset.addItem("(Missing encoder) - M4A Audio - 192K");
+			comb_preset.addItem("(Missing encoder) - M4A Audio - 128K");
+		}			
 	}
 	
 	/**
