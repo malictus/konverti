@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.*;
+
 import malictus.konverti.FFmpegStruct;
+import malictus.konverti.KonvertiUtils;
 
 /**
  * Picker dialog for OGG Vorbis options.
@@ -14,6 +17,7 @@ import malictus.konverti.FFmpegStruct;
 public class PickerOGGVorbis extends PickerDialog {
 	
 	private JComboBox<String> comb_quality;
+	private JComboBox<String> comb_codec;
 	
 	/**
 	 * Initialize the OGG options picker window
@@ -39,8 +43,23 @@ public class PickerOGGVorbis extends PickerDialog {
         comb_quality.addItem("9");
         comb_quality.addItem("10 (best)");
         comb_quality.setSelectedItem("5");
+        comb_codec = new JComboBox<String>();
+        if (KonvertiUtils.encoderIsPreset("libvorbis")) {
+        	comb_codec.addItem("libvorbis");
+        } else {
+        	comb_codec.addItem("(Missing encoder) - libvorbis");
+        }
+        if (KonvertiUtils.encoderIsPreset("vorbis")) {
+        	comb_codec.addItem("vorbis");
+        } else {
+        	comb_codec.addItem("(Missing encoder) - vorbis");
+        }        
+        comb_codec.setSelectedIndex(0);
         JPanel center_panel = new JPanel();
         center_panel.setLayout(new FlowLayout());
+        JLabel lbl_codec = new JLabel("Choose codec");
+        center_panel.add(lbl_codec);
+        center_panel.add(comb_codec);
         JLabel lbl_qual = new JLabel("Choose encoding quality");
         center_panel.add(lbl_qual);
         center_panel.add(comb_quality);
@@ -58,6 +77,15 @@ public class PickerOGGVorbis extends PickerDialog {
 	private void doNext() {
 		//this works out nicely since quality is a zero-based number
 		struct.params.setAudioQuality(comb_quality.getSelectedIndex());
+		if (comb_codec.getSelectedItem().equals("libvorbis")) {
+			struct.params.setAudioEncodingCodec("libvorbis");
+		} else if (comb_codec.getSelectedItem().equals("vorbis")) {
+			struct.params.setAudioEncodingCodec("vorbis");
+			struct.params.setUseExperimental(true);
+		} else {
+			//user chose invalid codec
+			return;
+		}
 		new PickerAudioOptions(struct);
 		setVisible(false);
         dispose();

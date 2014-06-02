@@ -39,7 +39,7 @@ public class PickerFormat extends PickerDialog {
         	comb_format.addItem("(Missing encoder) - MP3 audio");
         }
         //entry 3 - ogg vorbis audio
-        if (KonvertiUtils.encoderIsPreset("libvorbis")) {
+        if ( (KonvertiUtils.encoderIsPreset("libvorbis")) || (KonvertiUtils.encoderIsPreset("vorbis")) ) {
         	comb_format.addItem("OGG Vorbis audio");
         } else {
         	comb_format.addItem("(Missing encoder) - OGG Vorbis audio");
@@ -86,7 +86,6 @@ public class PickerFormat extends PickerDialog {
 			new PickerMP3(struct);
 		} else if (comb_format.getSelectedIndex() == 3) {
 			//OGG Vorbis
-			struct.params.setAudioEncodingCodec("libvorbis");
 			struct.params.setAudioOnly(true);
 			struct.extension = "ogg";
 			new PickerOGGVorbis(struct);

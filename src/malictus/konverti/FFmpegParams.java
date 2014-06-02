@@ -13,6 +13,7 @@ public class FFmpegParams {
 	private String audioEncodingCodec = null;
 	private String audioBitRate = null;
 	private int audioQuality = -1;
+	private boolean useExperimental = false;
 	
 	public FFmpegParams() {}
 	
@@ -27,6 +28,9 @@ public class FFmpegParams {
 		command = command + "-v warning ";
 		if (audioOnly) {
 			command = command + "-vn ";
+		}
+		if (useExperimental) {
+			command = command + "-strict -2 ";
 		}
 		if (audioSampleRate > -1) {
 			command = command + "-ar " + audioSampleRate + " ";
@@ -52,6 +56,14 @@ public class FFmpegParams {
 	 */
 	public void setAudioOnly(boolean audioOnly) {
 		this.audioOnly = audioOnly;
+	}
+	
+	/**
+	 * Toggle whether to send use experimental parameter to FFmpeg. Default is false.
+	 * @param useExperimental true to send parameter, false to leave blank
+	 */
+	public void setUseExperimental(boolean useExperimental) {
+		this.useExperimental = useExperimental;
 	}
 	
 	/**
