@@ -39,10 +39,17 @@ public class PickerFormat extends PickerDialog {
         	comb_format.addItem("(Missing encoder) - MP3 audio");
         }
         //entry 3 - ogg vorbis audio
-        if ( (KonvertiUtils.encoderIsPreset("libvorbis")) || (KonvertiUtils.encoderIsPreset("vorbis")) ) {
+        if ( (KonvertiUtils.encoderIsPreset("libvorbis")) || (KonvertiUtils.encoderIsPreset("vorbis"))
+        		|| (KonvertiUtils.encoderIsPreset("flac"))) {
         	comb_format.addItem("OGG Vorbis audio");
         } else {
         	comb_format.addItem("(Missing encoder) - OGG Vorbis audio");
+        }
+        //entry 4 - flac
+        if (KonvertiUtils.encoderIsPreset("flac")) {
+        	comb_format.addItem("FLAC audio");
+        } else {
+        	comb_format.addItem("(Missing encoder) - FLAC audio");
         }
         comb_format.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
@@ -89,6 +96,12 @@ public class PickerFormat extends PickerDialog {
 			struct.params.setAudioOnly(true);
 			struct.extension = "ogg";
 			new PickerOGGVorbis(struct);
+		} else if (comb_format.getSelectedIndex() == 4) {
+			//FLAC
+			struct.params.setAudioOnly(true);
+			struct.extension = "flac";
+			struct.params.setAudioEncodingCodec("flac");
+			new PickerAudioOptions(struct);
 		}
 		setVisible(false);
         dispose();

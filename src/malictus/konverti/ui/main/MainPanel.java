@@ -369,7 +369,7 @@ public class MainPanel extends JFrame {
 	}
 	
 	/**
-	 * Populate the combo box, including disabling any presets that won't work due to missing encoders. These can't be reordered without
+	 * Populate the preset combo box, including disabling any presets that won't work due to missing encoders. These can't be reordered without
 	 * also changing preset value constants in ConversionPanel.
 	 */
 	private void populateComboBox() {
@@ -414,7 +414,12 @@ public class MainPanel extends JFrame {
 			comb_preset.addItem("(Missing encoder) - M4A Audio - 320K");
 			comb_preset.addItem("(Missing encoder) - M4A Audio - 192K");
 			comb_preset.addItem("(Missing encoder) - M4A Audio - 128K");
-		}			
+		}	
+		if (KonvertiUtils.encoderIsPreset("flac")) {
+			comb_preset.addItem("FLAC Audio");
+		} else {
+			comb_preset.addItem("(Missing encoder) - FLAC Audio");
+		}	
 	}
 	
 	/**

@@ -50,11 +50,25 @@ public class PickerOGGVorbis extends PickerDialog {
         	comb_codec.addItem("(Missing encoder) - libvorbis");
         }
         if (KonvertiUtils.encoderIsPreset("vorbis")) {
-        	comb_codec.addItem("vorbis");
+        	comb_codec.addItem("vorbis (experimental)");
         } else {
         	comb_codec.addItem("(Missing encoder) - vorbis");
-        }        
+        }   
+        if (KonvertiUtils.encoderIsPreset("flac")) {
+        	comb_codec.addItem("flac");
+        } else {
+        	comb_codec.addItem("(Missing encoder) - flac");
+        }   
         comb_codec.setSelectedIndex(0);
+        comb_codec.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (comb_codec.getSelectedIndex() < 2) {
+                	comb_quality.setEnabled(true);
+                } else {
+                	comb_quality.setEnabled(false);
+                }
+            }
+        });
         JPanel center_panel = new JPanel();
         center_panel.setLayout(new FlowLayout());
         JLabel lbl_codec = new JLabel("Choose codec");
@@ -79,9 +93,11 @@ public class PickerOGGVorbis extends PickerDialog {
 		struct.params.setAudioQuality(comb_quality.getSelectedIndex());
 		if (comb_codec.getSelectedItem().equals("libvorbis")) {
 			struct.params.setAudioEncodingCodec("libvorbis");
-		} else if (comb_codec.getSelectedItem().equals("vorbis")) {
+		} else if (comb_codec.getSelectedItem().equals("vorbis (experimental)")) {
 			struct.params.setAudioEncodingCodec("vorbis");
 			struct.params.setUseExperimental(true);
+		} else if (comb_codec.getSelectedItem().equals("flac")) {
+			struct.params.setAudioEncodingCodec("flac");
 		} else {
 			//user chose invalid codec
 			return;
