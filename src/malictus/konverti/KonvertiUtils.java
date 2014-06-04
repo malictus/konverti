@@ -16,8 +16,8 @@ public class KonvertiUtils {
 	 * @return the text output from running the command
 	 * @throws IOException if file error occurs
 	 */
-	public static String runFFProbeCommand(String command) throws IOException {
-		return KonvertiUtils.runFFProbeCommand(command, null);
+	public static String runFFProbeCommand(List<String> commands) throws IOException {
+		return KonvertiUtils.runFFProbeCommand(commands, null);
 	}
 	
 	/**
@@ -27,13 +27,14 @@ public class KonvertiUtils {
 	 * @return the text output from running the command
 	 * @throws IOException if file error occurs
 	 */
-	public static String runFFProbeCommand(String command, File fileToProcess) throws IOException {
-		command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffprobe\" " + command;
+	public static String runFFProbeCommand(List<String> commands, File fileToProcess) throws IOException {
+		//add the actual command to the commands array at the beginning
+		commands.add(0, KonvertiMain.FFMPEG_BIN_FOLDER + "ffprobe");
 		if (fileToProcess != null) {
-			command = command + " \"" + fileToProcess.getAbsolutePath() + "\"";
+			commands.add(fileToProcess.getAbsolutePath());
 		}
 		String val = "";
-		ProcessBuilder builder = new ProcessBuilder(command);
+		ProcessBuilder builder = new ProcessBuilder(commands);
 	    final Process process = builder.start();
 	    InputStream is = process.getInputStream();
 	    InputStreamReader isr = new InputStreamReader(is);

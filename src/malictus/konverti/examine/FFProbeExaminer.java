@@ -1,7 +1,7 @@
 package malictus.konverti.examine;
 
 import java.io.*;
-import java.util.Hashtable;
+import java.util.*;
 import malictus.konverti.KonvertiUtils;
 
 /**
@@ -31,8 +31,11 @@ public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 	public FFProbeExaminer(File theFile) throws IOException {
 		this.theFile = theFile;
 		//first, check to see if the file is recognized by FFPROBE
-		String command = "-v quiet -show_error";
-		String validCheck = KonvertiUtils.runFFProbeCommand(command, theFile);
+		ArrayList<String> commands = new ArrayList<String>();
+		commands.add("-v");
+		commands.add("quiet");
+		commands.add("-show_error");
+		String validCheck = KonvertiUtils.runFFProbeCommand(commands, theFile);
 		if (validCheck.trim().length() > 1) {
 			isValid = false;
 			return;
@@ -40,15 +43,19 @@ public class FFProbeExaminer implements Comparable<FFProbeExaminer> {
 			isValid = true;
 		}
 		//next, run a command to generate basic format information for this file
-		command = "-v quiet -show_format";
-		format_info = KonvertiUtils.runFFProbeCommand(command, theFile);
+		commands = new ArrayList<String>();
+		//commands.add("-v quiet");
+		commands.add("-show_format");
+		format_info = KonvertiUtils.runFFProbeCommand(commands, theFile);
 		Hashtable<String, String> format_vals = KonvertiUtils.getHashtableFor(format_info);
 		//pull fields out of metadata
 		duration = format_vals.get("duration");
 		format = format_vals.get("format_long_name");
 		//now generate stream information
-		command = "-v quiet -show_streams";
-		stream_info = KonvertiUtils.runFFProbeCommand(command, theFile);
+		commands = new ArrayList<String>();
+		//commands.add("-v quiet");
+		commands.add("-show_streams");
+		stream_info = KonvertiUtils.runFFProbeCommand(commands, theFile);
 		String[] raw_streams = stream_info.split("\\[\\/STREAM\\]");
 		if (raw_streams.length > 1) {
 			//last one will be empty
