@@ -318,15 +318,18 @@ public class ConversionPanel extends JDialog {
 			command.setAudioQuality(7);
 		} else if (conversion_preset == PRESET_M4A_HI_320) {
 			command.setAudioOnly(true);
-			command.setAudioEncodingCodec("libvo_aacenc");
+			command.setAudioEncodingCodec("aac");
+			command.setUseExperimental(true);
 			command.setAudioBitRate("320k");
 		} else if (conversion_preset == PRESET_M4A_MID_192) {
 			command.setAudioOnly(true);
-			command.setAudioEncodingCodec("libvo_aacenc");
+			command.setAudioEncodingCodec("aac");
+			command.setUseExperimental(true);
 			command.setAudioBitRate("192k");
 		} else if (conversion_preset == PRESET_M4A_LO_128) {
 			command.setAudioOnly(true);
-			command.setAudioEncodingCodec("libvo_aacenc");
+			command.setAudioEncodingCodec("aac");
+			command.setUseExperimental(true);
 			command.setAudioBitRate("128k");
 		} else if (conversion_preset == PRESET_FLAC) {
 			command.setAudioOnly(true);

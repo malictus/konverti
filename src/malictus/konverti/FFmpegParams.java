@@ -16,6 +16,7 @@ public class FFmpegParams {
 	private String audioBitRate = null;
 	private int audioQuality = -1;
 	private boolean useExperimental = false;
+	private int cutoff = -1;
 	
 	public FFmpegParams() {}
 	
@@ -56,6 +57,10 @@ public class FFmpegParams {
 		if (audioQuality > -1) {
 			commands.add("-q:a");
 			commands.add("" + audioQuality);
+		}
+		if (cutoff > -1) {
+			commands.add("-cutoff");
+			commands.add("" + cutoff);
 		}
 		return commands;
 	}
@@ -101,6 +106,15 @@ public class FFmpegParams {
 	 */
 	public void setAudioQuality(int audioQuality) {
 		this.audioQuality = audioQuality;
+	}
+	
+	/**
+	 * Set the cutoff.
+	 * The default is -1, which means don't set this parameter at all.
+	 * @param cutoff the new cutoff value 
+	 */
+	public void setCutoff(int cutoff) {
+		this.cutoff = cutoff;
 	}
 	
 	/**

@@ -51,6 +51,8 @@ public class PickerFormat extends PickerDialog {
         } else {
         	comb_format.addItem("(Missing encoder) - FLAC audio");
         }
+        //entry 5 - m4a
+        comb_format.addItem("M4A (MPEG) audio");
         comb_format.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 updateTheUI();
@@ -102,6 +104,11 @@ public class PickerFormat extends PickerDialog {
 			struct.extension = "flac";
 			struct.params.setAudioEncodingCodec("flac");
 			new PickerAudioOptions(struct);
+		} else if (comb_format.getSelectedIndex() == 5) {
+			//M4A
+			struct.params.setAudioOnly(true);
+			struct.extension = "m4a";
+			new PickerM4A(struct);
 		}
 		setVisible(false);
         dispose();
