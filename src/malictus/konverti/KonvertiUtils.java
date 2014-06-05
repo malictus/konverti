@@ -71,12 +71,14 @@ public class KonvertiUtils {
 	public static Vector<Encoder> getEncoders() {
 		Vector<Encoder> encoders = new Vector<Encoder>();
 		try {
-			String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg\" ";
+			String[] commands = new String[4];
+			commands[0] = KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg";
 			//dont show lots of text
-			command = command + "-v warning ";
+			commands[1] = "-v";
+			commands[2] = "warning";
 			//show encoders
-			command = command + "-encoders";		
-			Process process = Runtime.getRuntime().exec(command);
+			commands[3] = "-encoders";	
+			Process process = Runtime.getRuntime().exec(commands);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		    String line = null;
 	        while ((line = stdInput.readLine()) != null) {

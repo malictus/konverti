@@ -1,5 +1,7 @@
 package malictus.konverti;
 
+import java.util.ArrayList;
+
 /**
  * This class represents a single command-line call to FFmpeg. Basically, you can set various parameters, then call getString() to get out the
  * full command to pass to FFmpeg.
@@ -25,16 +27,19 @@ public class FFmpegCommand {
 	
 	/**
 	 * Generate the full text for the FFmpeg command to use, based on the current state of this object
-	 * @return the full command string for FFmpeg
+	 * @return the full command string array for FFmpeg
 	 */
-	public String getCommand() {
-		String command = "\"" + KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg\" ";
+	public ArrayList<String> getCommand() {
+		ArrayList<String> commands = new ArrayList<String>();
+		//first add actual ffmpeg call
+		commands.add(KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg");
 		//input file parameter
-		command = command + "-i \"" + inputFile + "\" ";
-		command = command + params.getCommand();
+		commands.add("-i");
+		commands.add(inputFile);
+		commands.addAll(params.getCommand());
 		//output file - should always be last
-		command = command + "\"" + outputFile + "\"";
-		return command;
+		commands.add(outputFile);
+		return commands;
 	}
 
 }

@@ -3,6 +3,7 @@ package malictus.konverti.ui.convert;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.io.*;
 
@@ -188,7 +189,7 @@ public class ConversionPanel extends JDialog {
 	 */
 	private void runFFMpegCommand(File inFile, File outFile) throws IOException {
 		FFmpegCommand theCommand = new FFmpegCommand(inFile.getAbsolutePath(), outFile.getAbsolutePath(), struct.params);
-		String command = theCommand.getCommand();
+		ArrayList<String> command = theCommand.getCommand();
 		this.txt_cmdline.append("Command: " + command + "\n");
 		ProcessBuilder builder = new ProcessBuilder(command);
 	    final Process process = builder.start();

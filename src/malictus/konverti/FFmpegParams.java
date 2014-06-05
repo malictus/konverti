@@ -1,5 +1,7 @@
 package malictus.konverti;
 
+import java.util.ArrayList;
+
 /**
  * This class represents a set of FFmpeg parameters. Basically, these are the non-file command line options that should be passed to FFmpeg.
  * This is pulled out to a separate call so it can be used over and over with various files as input and output.
@@ -19,35 +21,43 @@ public class FFmpegParams {
 	
 	/**
 	 * This returns the parameters portion of the FFmpeg call, but not including the input file.
-	 * @return the parameters string
+	 * @return the parameters string array
 	 */
-	public String getCommand() {
+	public ArrayList<String> getCommand() {
+		ArrayList<String> commands = new ArrayList<String>();
 		//dont show banner every time (always do this)
-		String command = " -hide_banner ";
+		commands.add("-hide_banner");
 		//dont show lots of text (always do this)
-		command = command + "-v warning ";
+		commands.add("-v");
+		commands.add("warning");
 		if (audioOnly) {
-			command = command + "-vn ";
+			commands.add("-vn");
 		}
 		if (useExperimental) {
-			command = command + "-strict -2 ";
+			commands.add("-strict");
+			commands.add("-2");
 		}
 		if (audioSampleRate > -1) {
-			command = command + "-ar " + audioSampleRate + " ";
+			commands.add("-ar");
+			commands.add("" + audioSampleRate);
 		}
 		if (audioChannels > -1) {
-			command = command + "-ac " + audioChannels + " ";
+			commands.add("-ac");
+			commands.add("" + audioChannels);
 		}
 		if (audioEncodingCodec != null) {
-			command = command + "-acodec " + audioEncodingCodec + " ";
+			commands.add("-acodec");
+			commands.add(audioEncodingCodec);
 		}
 		if (audioBitRate != null) {
-			command = command + "-b:a " + audioBitRate + " ";
+			commands.add("-b:a");
+			commands.add(audioBitRate);
 		}
 		if (audioQuality > -1) {
-			command = command + "-q:a " + audioQuality + " ";
+			commands.add("-q:a");
+			commands.add("" + audioQuality);
 		}
-		return command;
+		return commands;
 	}
 	
 	/**
