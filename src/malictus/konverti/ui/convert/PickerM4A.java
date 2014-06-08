@@ -29,7 +29,7 @@ public class PickerM4A extends PickerDialog {
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
-		setTitle("Choose M4A encoding options");
+		setTitle("Choose MPEG audio encoding options");
 		comb_bitrate = new JComboBox<String>();
         comb_bitrate.addItem("8k");
         comb_bitrate.addItem("16k");

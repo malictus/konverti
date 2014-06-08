@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class KonvertiUtils {
 	
+	private static Vector<Encoder> encoders = null;
+	
 	/**
 	 * Run FFProbe command without a file parameter (only command line options, such as version, can be used in this way)
 	 * @param command command-line options to pass to ffprobe
@@ -69,7 +71,11 @@ public class KonvertiUtils {
 	 * @return the vector of all the encoder objects
 	 */
 	public static Vector<Encoder> getEncoders() {
-		Vector<Encoder> encoders = new Vector<Encoder>();
+		//only generate if this is the first time this is called
+		if (encoders != null) {
+			return encoders;
+		}
+		encoders = new Vector<Encoder>();
 		try {
 			String[] commands = new String[4];
 			commands[0] = KonvertiMain.FFMPEG_BIN_FOLDER + "ffmpeg";

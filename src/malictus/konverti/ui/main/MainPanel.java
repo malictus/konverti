@@ -77,7 +77,7 @@ public class MainPanel extends JFrame {
         contentPanel.add(scroll_file, BorderLayout.CENTER);  
         //north panel
         JPanel pnl_north = new JPanel();
-        JLabel lbl_drag = new JLabel("<html><font color = 'blue' ><u>Visit Konverti Website</u></font></center>");
+        JLabel lbl_drag = new JLabel("<html><center><font color = 'blue' ><u>Visit Konverti Website</u></font>&nbsp;&nbsp;</center></html>");
         lbl_drag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lbl_drag.addMouseListener(new MouseAdapter() {  
             public void mouseReleased(MouseEvent e) {  
@@ -93,7 +93,44 @@ public class MainPanel extends JFrame {
                 }  
             }  
         });  
+        JLabel lbl_audio = new JLabel("<html><center><font color = 'blue' ><u>List Audio Encoders</u></font>&nbsp;&nbsp;</center></html>");
+        lbl_audio.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lbl_audio.addMouseListener(new MouseAdapter() {  
+            public void mouseReleased(MouseEvent e) {  
+                if (!e.isPopupTrigger()) {  
+                	txt_fileinfo.setText("");
+                	int count = 0;
+                	System.out.println(KonvertiUtils.getEncoders().size());
+                	while (count < KonvertiUtils.getEncoders().size()) {
+                		Encoder enc = KonvertiUtils.getEncoders().get(count);
+                		if (enc.getType() == Encoder.TYPE_AUDIO) {
+                			txt_fileinfo.append(enc.getName() + " (" + enc.getLongName() + ")\n");
+                		}
+                		count++;
+                	}
+                }  
+            }  
+        });  
+        JLabel lbl_video = new JLabel("<html><center><font color = 'blue' ><u>List Video Encoders</u></font>&nbsp;&nbsp;</center></html>");
+        lbl_video.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lbl_video.addMouseListener(new MouseAdapter() {  
+            public void mouseReleased(MouseEvent e) {  
+                if (!e.isPopupTrigger()) {  
+                	txt_fileinfo.setText("");
+                	int count = 0;
+                	while (count < KonvertiUtils.getEncoders().size()) {
+                		Encoder enc = KonvertiUtils.getEncoders().get(count);
+                		if (enc.getType() == Encoder.TYPE_VIDEO) {
+                			txt_fileinfo.append(enc.getName() + " (" + enc.getLongName() + ")\n");
+                		}
+                		count++;
+                	}
+                }  
+            }  
+        });  
         pnl_north.setLayout(new FlowLayout());
+        pnl_north.add(lbl_audio);
+        pnl_north.add(lbl_video);
         pnl_north.add(lbl_drag);
         contentPanel.add(pnl_north, BorderLayout.NORTH);
         //east panel - most functionality goes here

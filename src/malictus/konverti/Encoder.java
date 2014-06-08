@@ -16,12 +16,6 @@ public class Encoder {
 	private String long_name;
 	
 	public Encoder(int type, String name, String long_name) {
-		//useful for getting a quick list of encoders
-		/*
-		if (type == 1) {
-			System.out.println(name + " " + long_name);
-		}
-		*/
 		this.type = type;
 		this.name = name;
 		this.long_name = name;

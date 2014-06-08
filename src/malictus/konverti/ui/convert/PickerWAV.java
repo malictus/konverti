@@ -28,7 +28,7 @@ public class PickerWAV extends PickerDialog {
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
-		setTitle("Choose WAV encoding options");
+		setTitle("Choose WAV audio zencoding options");
 		comb_codec = new JComboBox<String>();
 		//entry 0 - WAV audio (8 bit)
 		if (KonvertiUtils.encoderIsPreset("pcm_u8")) {

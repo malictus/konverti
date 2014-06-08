@@ -29,7 +29,7 @@ public class PickerOGGVorbis extends PickerDialog {
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
-		setTitle("Choose OGG encoding options");
+		setTitle("Choose OGG Vorbis audio encoding options");
         comb_quality = new JComboBox<String>();
         comb_quality.addItem("0 (worst)");
         comb_quality.addItem("1");

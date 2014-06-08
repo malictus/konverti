@@ -28,7 +28,7 @@ public class PickerMP3 extends PickerDialog {
 		/*********************************/
         /** set up components on screen **/
         /*********************************/
-		setTitle("Choose MP3 encoding options");
+		setTitle("Choose MP3 audio encoding options");
         chk_bitrate = new JRadioButton("Constant Bitrate");
         chk_quality = new JRadioButton("Variable Bitrate");
         chk_bitrate.setSelected(true);
