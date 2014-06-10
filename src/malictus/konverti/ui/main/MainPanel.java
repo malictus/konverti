@@ -100,7 +100,6 @@ public class MainPanel extends JFrame {
                 if (!e.isPopupTrigger()) {  
                 	txt_fileinfo.setText("");
                 	int count = 0;
-                	System.out.println(KonvertiUtils.getEncoders().size());
                 	while (count < KonvertiUtils.getEncoders().size()) {
                 		Encoder enc = KonvertiUtils.getEncoders().get(count);
                 		if (enc.getType() == Encoder.TYPE_AUDIO) {
