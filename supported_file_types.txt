@@ -9,3 +9,4 @@ MP3 (VBR and CBR)
 OGG Vorbis (libvorbis, vorbis, or flac encoders)
 FLAC
 M4A (libfdk_aac, libfaac, aac, and libvo_aacenc encoders)
+Windows Media Audio (WMA)

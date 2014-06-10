@@ -456,6 +456,13 @@ public class MainPanel extends JFrame {
 		} else {
 			comb_preset.addItem("(Missing encoder) - FLAC Audio");
 		}	
+		if (KonvertiUtils.encoderIsPreset("wmav2")) {
+			comb_preset.addItem("Windows Media Audio - 320K");
+			comb_preset.addItem("Windows Media Audio - 120K");
+		} else {
+			comb_preset.addItem("(Missing encoder) - Windows Media Audio - 320K");
+			comb_preset.addItem("(Missing encoder) - Windows Media Audio - 120K");
+		}	
 	}
 	
 	/**

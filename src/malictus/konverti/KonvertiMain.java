@@ -42,7 +42,7 @@ public class KonvertiMain {
 	//whether or not custom target is checked
 	public static boolean FFMPEG_USE_CUSTOM_TARGET = false;
 	//current version
-	public static float VERSION = 0.05f;
+	public static float VERSION = 0.06f;
 	//name of preferences node to use for all prefs
 	public static final String PREFS_NAME = "Konverti_Preferences";
 	//holds saved folder location for FFmpeg binary files

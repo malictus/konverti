@@ -45,6 +45,8 @@ public class ConversionPanel extends JDialog {
 	public static final int PRESET_M4A_MID_192 = 12;
 	public static final int PRESET_M4A_LO_128 = 13;
 	public static final int PRESET_FLAC = 14;
+	public static final int PRESET_WMA_HI = 15;
+	public static final int PRESET_WMA_LO = 16;
 	
 	/**
 	 * Initialize the conversion window from a struct passed in from the custom dialogs
@@ -265,6 +267,10 @@ public class ConversionPanel extends JDialog {
 		if (conversion_preset == PRESET_FLAC) {
 			return "flac";
 		}
+		if ((conversion_preset == PRESET_WMA_HI) || (conversion_preset == PRESET_WMA_LO)) {
+			return "wma";
+		}
+		
 		return "";
 	}
 	
@@ -334,6 +340,14 @@ public class ConversionPanel extends JDialog {
 		} else if (conversion_preset == PRESET_FLAC) {
 			command.setAudioOnly(true);
 			command.setAudioEncodingCodec("flac");
+		} else if (conversion_preset == PRESET_WMA_HI) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("wmav2");
+			command.setAudioBitRate("320k");
+		} else if (conversion_preset == PRESET_WMA_LO) {
+			command.setAudioOnly(true);
+			command.setAudioEncodingCodec("wmav2");
+			command.setAudioBitRate("120k");
 		}
 		return command;
 	}

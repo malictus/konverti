@@ -53,6 +53,12 @@ public class PickerFormat extends PickerDialog {
         }
         //entry 5 - m4a
         comb_format.addItem("M4A (MPEG) audio");
+        //entry 6 - wma
+        if ((KonvertiUtils.encoderIsPreset("wmav1")) || (KonvertiUtils.encoderIsPreset("wmav2"))) {
+        	comb_format.addItem("Windows Media Audio (WMA)");
+        } else {
+        	comb_format.addItem("(Missing encoder) - Windows Media Audio (WMA)");
+        }
         comb_format.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 updateTheUI();
@@ -109,6 +115,11 @@ public class PickerFormat extends PickerDialog {
 			struct.params.setAudioOnly(true);
 			struct.extension = "m4a";
 			new PickerM4A(struct);
+		} else if (comb_format.getSelectedIndex() == 6) {
+			//WMA
+			struct.params.setAudioOnly(true);
+			struct.extension = "wma";
+			new PickerWMA(struct);
 		}
 		setVisible(false);
         dispose();

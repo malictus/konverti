@@ -1,3 +1,6 @@
+Version 0.06
+- added Windows Media Audio (WMA) file support
+
 Version 0.05 - Released June 9, 2014
 - added M4A and FLAC support
 - serious bug fix so that program can run on Unix systems
