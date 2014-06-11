@@ -10,3 +10,8 @@ OGG Vorbis (libvorbis, vorbis, or flac encoders)
 FLAC
 M4A (libfdk_aac, libfaac, aac, and libvo_aacenc encoders)
 Windows Media Audio (WMA)
+
+*************************
+** VIDEO FORMATS **
+*************************
+MP4 (libx264 video, libfdk_aac, libfaac, aac, and libvo_aacenc audio)

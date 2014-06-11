@@ -463,6 +463,13 @@ public class MainPanel extends JFrame {
 			comb_preset.addItem("(Missing encoder) - Windows Media Audio - 320K");
 			comb_preset.addItem("(Missing encoder) - Windows Media Audio - 120K");
 		}	
+		if (KonvertiUtils.encoderIsPreset("aac") || KonvertiUtils.encoderIsPreset("libx264")) {
+			comb_preset.addItem("MP4 Video - High Quality");
+			comb_preset.addItem("MP4 Video - Low Quality");
+		} else {
+			comb_preset.addItem("(Missing encoder) - MP4 Video - High Quality");
+			comb_preset.addItem("(Missing encoder) - MP4 Video - Low Quality");
+		}	
 	}
 	
 	/**

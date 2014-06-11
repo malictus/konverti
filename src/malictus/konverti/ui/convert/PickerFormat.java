@@ -59,6 +59,12 @@ public class PickerFormat extends PickerDialog {
         } else {
         	comb_format.addItem("(Missing encoder) - Windows Media Audio (WMA)");
         }
+        //entry 7 - mp4
+        if (KonvertiUtils.encoderIsPreset("libx264")) {
+        	comb_format.addItem("MP4 Video");
+        } else {
+        	comb_format.addItem("(Missing encoder) - MP4 Video");
+        }
         comb_format.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 updateTheUI();
@@ -120,6 +126,11 @@ public class PickerFormat extends PickerDialog {
 			struct.params.setAudioOnly(true);
 			struct.extension = "wma";
 			new PickerWMA(struct);
+		} else if (comb_format.getSelectedIndex() == 7) {
+			//MP4
+			struct.extension = "mp4";
+			struct.params.setVideoEncodingCodec("libx264");
+			new PickerMP4(struct);
 		}
 		setVisible(false);
         dispose();

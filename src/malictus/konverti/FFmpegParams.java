@@ -17,6 +17,10 @@ public class FFmpegParams {
 	private int audioQuality = -1;
 	private boolean useExperimental = false;
 	private int cutoff = -1;
+	private String videoEncodingCodec = null;
+	private int constantRateFactor = -1;
+	private String tuning = null;
+	private String preset = null;
 	
 	public FFmpegParams() {}
 	
@@ -61,6 +65,22 @@ public class FFmpegParams {
 		if (cutoff > -1) {
 			commands.add("-cutoff");
 			commands.add("" + cutoff);
+		}
+		if (videoEncodingCodec != null) {
+			commands.add("-vcodec");
+			commands.add(videoEncodingCodec);
+		}
+		if (constantRateFactor > -1) {
+			commands.add("-crf");
+			commands.add("" + constantRateFactor);
+		}
+		if (preset != null) {
+			commands.add("-preset");
+			commands.add("" + preset);
+		}
+		if (tuning != null) {
+			commands.add("-tune");
+			commands.add("" + tuning);
 		}
 		return commands;
 	}
@@ -132,6 +152,39 @@ public class FFmpegParams {
 	 */
 	public void setAudioEncodingCodec(String audioEncodingCodec) {
 		this.audioEncodingCodec = audioEncodingCodec;
+	}
+	
+	/**
+	 * Set the video codec for output.  Default is null, which means don't set this parameter at all.
+	 * This parameter should be set everytime, if there are video streams present.
+	 * @param videoCodec the codec to use
+	 */
+	public void setVideoEncodingCodec(String videoEncodingCodec) {
+		this.videoEncodingCodec = videoEncodingCodec;
+	}
+	
+	/**
+	 * Set the CRF (constant rate factor) for output. Default is -1, which means don't set this parameter at all.
+	 * @param crf the constant rate factor to set. 
+	 */
+	public void setConstantRateFactor(int constantRateFactor) {
+		this.constantRateFactor = constantRateFactor;
+	}
+	
+	/**
+	 * Set the preset for output. Default is null, which means don't set this parameter at all.
+	 * @param preset the preset to use
+	 */
+	public void setPreset(String preset) {
+		this.preset = preset;
+	}
+	
+	/**
+	 * Set the tuning parameter for output. Default is null, which means don't set this parameter at all.
+	 * @param tuning the tuning to use
+	 */
+	public void setTuning(String tuning) {
+		this.tuning = tuning;
 	}
 
 }

@@ -47,6 +47,8 @@ public class ConversionPanel extends JDialog {
 	public static final int PRESET_FLAC = 14;
 	public static final int PRESET_WMA_HI = 15;
 	public static final int PRESET_WMA_LO = 16;
+	public static final int PRESET_MP4_HI = 17;
+	public static final int PRESET_MP4_LO = 18;
 	
 	/**
 	 * Initialize the conversion window from a struct passed in from the custom dialogs
@@ -270,7 +272,9 @@ public class ConversionPanel extends JDialog {
 		if ((conversion_preset == PRESET_WMA_HI) || (conversion_preset == PRESET_WMA_LO)) {
 			return "wma";
 		}
-		
+		if ((conversion_preset == PRESET_MP4_HI) || (conversion_preset == PRESET_MP4_LO)) {
+			return "mp4";
+		}
 		return "";
 	}
 	
@@ -348,6 +352,18 @@ public class ConversionPanel extends JDialog {
 			command.setAudioOnly(true);
 			command.setAudioEncodingCodec("wmav2");
 			command.setAudioBitRate("120k");
+		} else if (conversion_preset == PRESET_MP4_HI) {
+			command.setUseExperimental(true);
+			command.setAudioBitRate("320k");
+			command.setAudioEncodingCodec("aac");
+			command.setVideoEncodingCodec("libx264");
+			command.setConstantRateFactor(20);
+		} else if (conversion_preset == PRESET_MP4_LO) {
+			command.setUseExperimental(true);
+			command.setAudioBitRate("192k");
+			command.setAudioEncodingCodec("aac");
+			command.setVideoEncodingCodec("libx264");
+			command.setConstantRateFactor(28);
 		}
 		return command;
 	}
