@@ -113,7 +113,7 @@ public class PickerMP4 extends PickerDialog {
 		if (!comb_tuning.getSelectedItem().equals("<no setting>")) {
 			struct.params.setTuning((String)comb_tuning.getSelectedItem());
 		}
-		new PickerM4A(struct);
+		new PickerVideoOptions(struct);
 		setVisible(false);
         dispose();
 	}

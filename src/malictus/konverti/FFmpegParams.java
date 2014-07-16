@@ -21,6 +21,9 @@ public class FFmpegParams {
 	private int constantRateFactor = -1;
 	private String tuning = null;
 	private String preset = null;
+	private boolean resize = false;
+	private int width = -1;
+	private int height = -1;
 	
 	public FFmpegParams() {}
 	
@@ -81,6 +84,10 @@ public class FFmpegParams {
 		if (tuning != null) {
 			commands.add("-tune");
 			commands.add("" + tuning);
+		}
+		if (resize) {
+			commands.add("-vf");
+			commands.add("scale=" + width + ":" + height);
 		}
 		return commands;
 	}
@@ -185,6 +192,32 @@ public class FFmpegParams {
 	 */
 	public void setTuning(String tuning) {
 		this.tuning = tuning;
+	}
+	
+	/**
+	 * Set whether to resize the video or not.
+	 * @param resize whether to resize the existing video
+	 */
+	public void setResize(boolean resize) {
+		this.resize = resize;
+	}
+	
+	/**
+	 * Set the width for output. Default is -1, which will set the width based on the new height. Note that this parameter will only
+	 * do something if the 'resize' value is set to true.
+	 * @param width the new width
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	
+	/**
+	 * Set the height for output. Default is -1, which will set the height based on the new width. Note that this parameter will only
+	 * do something if the 'resize' value is set to true.
+	 * @param height the new height
+	 */
+	public void setHeight(int height) {
+		this.height = height;
 	}
 
 }
