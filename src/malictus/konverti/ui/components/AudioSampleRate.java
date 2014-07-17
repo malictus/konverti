@@ -28,20 +28,19 @@ public class AudioSampleRate extends JPanel implements FFmpegComponent {
         add(comb_samplerate);
 	}
 	
-	public void modifyStruct(FFmpegStruct struct) {
+	public void modifyStruct(FFmpegStruct struct) throws Exception {
 		String samplerate = (String)comb_samplerate.getSelectedItem();
 		if (!samplerate.equals("Preserve original")) {
+			Integer samplerateInt;
 			try {
-				Integer samplerateInt = Integer.decode(samplerate);
-				if (samplerateInt.intValue() < 1000) {
-					//invalid, ignore
-					return;
-				}
-				struct.params.setAudioSampleRate(samplerateInt.intValue());
+				samplerateInt = Integer.decode(samplerate);
 			} catch (Exception err) {
-				//not a number, ignore
-				return;
+				throw new Exception("Invalid sample rate value");
 			}
+			if (samplerateInt.intValue() < 1000) {
+				throw new Exception("Invalid sample rate value");
+			}
+			struct.params.setAudioSampleRate(samplerateInt.intValue());
 		}
 	}
 	

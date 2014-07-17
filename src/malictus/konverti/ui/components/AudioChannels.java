@@ -27,20 +27,19 @@ public class AudioChannels extends JPanel implements FFmpegComponent {
         add(comb_channel);
 	}
 	
-	public void modifyStruct(FFmpegStruct struct) {
+	public void modifyStruct(FFmpegStruct struct) throws Exception {
 		String channels = (String)comb_channel.getSelectedItem();
 		if (!channels.equals("Preserve original")) {
+			Integer channelsInt;
 			try {
-				Integer channelsInt = Integer.decode(channels);
-				if (channelsInt.intValue() < 1) {
-					//invalid, ignore this parameter
-					return;
-				}
-				struct.params.setAudioChannels(channelsInt.intValue());
+				channelsInt = Integer.decode(channels);
 			} catch (Exception err) {
-				//invalid, ignore this parameter
-				return;
+				throw new Exception("Invalid audio channels");
 			}
+			if (channelsInt.intValue() < 1) {
+				throw new Exception("Invalid audio channels");
+			}
+			struct.params.setAudioChannels(channelsInt.intValue());
 		}
 	}
 	

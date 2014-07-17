@@ -45,8 +45,13 @@ public class PickerAudioOptions extends PickerDialog {
 	 * This should always be the last step, so take user to the end
 	 */
 	private void doNext() {
-		audio_sample_rate.modifyStruct(struct);
-		audio_channel.modifyStruct(struct);
+		try {
+			audio_sample_rate.modifyStruct(struct);
+			audio_channel.modifyStruct(struct);
+		} catch (Exception err) {
+			//don't continue, one of the fields has an invalid value
+			return;
+		}
 		new ConversionPanel(struct);
 		setVisible(false);
         dispose();
