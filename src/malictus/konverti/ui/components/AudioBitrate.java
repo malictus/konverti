@@ -11,6 +11,7 @@ import malictus.konverti.FFmpegStruct;
 public class AudioBitrate extends JPanel implements FFmpegComponent {
 	
 	private JComboBox<String> comb_bitrate;
+	private JLabel lbl_bit;
 
 	public AudioBitrate() {
 		super();
@@ -34,9 +35,15 @@ public class AudioBitrate extends JPanel implements FFmpegComponent {
         comb_bitrate.setEditable(false);
         comb_bitrate.setSelectedItem("192k");
         setLayout(new FlowLayout());
-        JLabel lbl_qual = new JLabel("Choose audio bitrate");
-        add(lbl_qual);
+        lbl_bit = new JLabel("Choose audio bitrate");
+        add(lbl_bit);
         add(comb_bitrate);
+	}
+	
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		this.comb_bitrate.setEnabled(enabled);
+		this.lbl_bit.setEnabled(enabled);
 	}
 	
 	public void modifyStruct(FFmpegStruct struct) {
