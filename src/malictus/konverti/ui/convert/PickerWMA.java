@@ -6,7 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import malictus.konverti.FFmpegStruct;
-import malictus.konverti.KonvertiUtils;
+import malictus.konverti.ui.components.AudioBitrate;
+import malictus.konverti.ui.components.WMACodec;
 
 /**
  * Picker dialog for WMA options.
@@ -14,8 +15,8 @@ import malictus.konverti.KonvertiUtils;
  */
 public class PickerWMA extends PickerDialog {
 	
-	private JComboBox<String> comb_codec;
-	private JComboBox<String> comb_bitrate;
+	private WMACodec codec;
+	private AudioBitrate bitrate;
 	
 	/**
 	 * Initialize the WMA options picker window
@@ -28,44 +29,12 @@ public class PickerWMA extends PickerDialog {
         /** set up components on screen **/
         /*********************************/
 		setTitle("Choose Windows Media Audio encoding options");
-		comb_bitrate = new JComboBox<String>();
-        comb_bitrate.addItem("8k");
-        comb_bitrate.addItem("16k");
-        comb_bitrate.addItem("24k");
-        comb_bitrate.addItem("32k");
-        comb_bitrate.addItem("40k");
-        comb_bitrate.addItem("48k");
-        comb_bitrate.addItem("64k");
-        comb_bitrate.addItem("80k");
-        comb_bitrate.addItem("96k");
-        comb_bitrate.addItem("112k");
-        comb_bitrate.addItem("128k");
-        comb_bitrate.addItem("160k");
-        comb_bitrate.addItem("192k");
-        comb_bitrate.addItem("224k");
-        comb_bitrate.addItem("256k");
-        comb_bitrate.addItem("320k");
-        comb_bitrate.setSelectedItem("192k");
-        comb_codec = new JComboBox<String>();
-        if (KonvertiUtils.encoderIsPreset("wmav1")) {
-        	comb_codec.addItem("wmav1");
-        } else {
-        	comb_codec.addItem("(Missing encoder) - wmav1");
-        }
-        if (KonvertiUtils.encoderIsPreset("wmav2")) {
-        	comb_codec.addItem("wmav2");
-        } else {
-        	comb_codec.addItem("(Missing encoder) - wmav2");
-        }   
-        comb_codec.setSelectedIndex(1);
+		bitrate = new AudioBitrate();
+        codec = new WMACodec();
         JPanel center_panel = new JPanel();
         center_panel.setLayout(new FlowLayout());
-        JLabel lbl_codec = new JLabel("Choose codec");
-        center_panel.add(lbl_codec);
-        center_panel.add(comb_codec);
-        JLabel lbl_qual = new JLabel("Choose encoding quality");
-        center_panel.add(lbl_qual);
-        center_panel.add(comb_bitrate);
+        center_panel.add(codec);
+        center_panel.add(bitrate);
         btn_next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doNext();
@@ -78,13 +47,11 @@ public class PickerWMA extends PickerDialog {
 	 * Next step after this is general audio options dialog
 	 */
 	private void doNext() {
-		struct.params.setAudioBitRate((String)comb_bitrate.getSelectedItem());
-		if (comb_codec.getSelectedItem().equals("wmav1")) {
-			struct.params.setAudioEncodingCodec("wmav1");
-		} else if (comb_codec.getSelectedItem().equals("wmav2")) {
-			struct.params.setAudioEncodingCodec("wmav2");
-		} else {
-			//user chose invalid codec
+		bitrate.modifyStruct(struct);
+		try {
+			codec.modifyStruct(struct);
+		} catch (Exception err) {
+			//don't continue, one of the fields has an invalid value
 			return;
 		}
 		new PickerAudioOptions(struct);
