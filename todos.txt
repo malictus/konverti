@@ -1,0 +1,16 @@
+UI component fix --- so far only audio picker options class is converted
+
+new general video options:
+rotate and mirror video
+
+check on m4v extension
+
+new page order
+first, select new file type
+first, ALL video dialog. incl. option at top for encodings
+then, ALL audio dialog. incl. option at top for encodings
+blank out or otherwise show/hide non applicable fields based on options
+then, final options dialog (with options for displaying errors, etc.) AND show extension and allow change and full command line here too! with an 'end' button
+all get back buttons
+
+add new video encoding options for mp4, incl. changing check to enable this option in original custom dialog box
