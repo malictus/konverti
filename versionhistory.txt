@@ -1,3 +1,6 @@
+Version 0.07
+- change URL for website
+
 Version 0.06
 - added Windows Media Audio (WMA) file support
 - added support for video files encoding

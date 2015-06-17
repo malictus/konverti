@@ -85,7 +85,7 @@ public class MainPanel extends JFrame {
                 	Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                     if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                         try {
-                            desktop.browse((new URL("http://www.konverti.org")).toURI());
+                            desktop.browse((new URL("http://konverti.malictus.net")).toURI());
                         } catch (Exception err) {
                             err.printStackTrace();
                         }
